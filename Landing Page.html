@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D.L.C — Deep Lead Consulting</title>
+  <meta name="description" content="D.L.C — Deep Lead Consulting. Technical Depth. Human Leadership. Long-Term Impact." />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(17, 24, 49, 0.78);
+      --panel-strong: #121a35;
+      --line: rgba(255,255,255,0.1);
+      --text: #ecf1ff;
+      --muted: #b7c2e0;
+      --brand: #7cc9ff;
+      --brand-2: #8ef0cf;
+      --danger: #ff9090;
+      --ok: #9ff3c8;
+      --shadow: 0 24px 60px rgba(0,0,0,.28);
+      --radius: 20px;
+      --max: 1180px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(124, 201, 255, 0.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(142, 240, 207, 0.12), transparent 28%),
+        linear-gradient(180deg, #08101d 0%, #0b1020 35%, #0d1327 100%);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(var(--max), calc(100% - 32px)); margin: 0 auto; }
+    .section { padding: 84px 0; }
+    .muted { color: var(--muted); }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      background: rgba(8, 13, 28, 0.68);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 76px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, rgba(124,201,255,.25), rgba(142,240,207,.18));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow);
+      font-size: 0.95rem;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 48px;
+      padding: 0 20px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
+    }
+
+    .btn:hover { transform: translateY(-1px); }
+    .btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+    .btn-primary {
+      color: #07111f;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      box-shadow: 0 10px 30px rgba(124,201,255,.25);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      background: rgba(255,255,255,.04);
+      border-color: rgba(255,255,255,.1);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--brand);
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 30px;
+      height: 1px;
+      background: linear-gradient(90deg, var(--brand), transparent);
+    }
+
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 {
+      font-size: clamp(2.8rem, 6vw, 5.4rem);
+      line-height: 1.03;
+      letter-spacing: -0.05em;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.04em;
+      margin-bottom: 18px;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      line-height: 1.3;
+      margin-bottom: 12px;
+    }
+
+    p.lead {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 780px;
+    }
+
+    .hero {
+      padding: 48px 0 34px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .hero-card,
+    .glass,
+    .card,
+    .form-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-copy { padding: 24px 0; }
+    .hero-copy p { color: var(--muted); font-size: 1.08rem; max-width: 740px; }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+
+    .pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: #dce9ff;
+      font-size: 0.93rem;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      padding: 18px;
+    }
+
+    .stat {
+      padding: 22px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.2rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 6px;
+    }
+
+    .grid-2, .grid-3 { display: grid; gap: 22px; }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+
+    .card { padding: 28px; }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: inline-grid;
+      place-items: center;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg, rgba(124,201,255,.18), rgba(142,240,207,.12));
+      border: 1px solid rgba(255,255,255,.08);
+      font-size: 1.2rem;
+    }
+
+    ul.clean {
+      padding-left: 18px;
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    ul.clean li { margin-bottom: 10px; }
+
+    .belief-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 22px;
+    }
+
+    .belief-item {
+      padding: 18px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .belief-item strong { display: block; margin-bottom: 6px; }
+
+    .framework-note {
+      margin-top: 24px;
+      padding: 22px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(124,201,255,.10), rgba(142,240,207,.06));
+      border: 1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+    }
+
+    .contact-wrap {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 26px;
+      align-items: start;
+    }
+
+    .meta-panel { position: sticky; top: 98px; }
+    .meta-list { display: grid; gap: 14px; margin-top: 24px; }
+
+    .meta-item {
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+
+    .form-card {
+      background: var(--panel-strong);
+      padding: 28px;
+      border-radius: 24px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .field, .field-full {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field-full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #f4f7ff;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 14px;
+      font: inherit;
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(124,201,255,.5);
+      box-shadow: 0 0 0 4px rgba(124,201,255,.10);
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .cluster {
+      padding: 20px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+
+    .cluster + .cluster { margin-top: 16px; }
+    .cluster h4 { margin-bottom: 12px; font-size: 1rem; }
+
+    .checks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .check { position: relative; }
+    .check input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .check span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 42px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: all .18s ease;
+      user-select: none;
+    }
+
+    .check input:checked + span {
+      color: #07111f;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      border-color: transparent;
+      box-shadow: 0 8px 24px rgba(124,201,255,.18);
+    }
+
+    .form-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    .helper { color: var(--muted); font-size: 0.92rem; }
+
+    .result {
+      margin-top: 24px;
+      display: none;
+      padding: 22px;
+      border-radius: 18px;
+      border: 1px solid rgba(124,201,255,.22);
+      background: linear-gradient(135deg, rgba(124,201,255,.10), rgba(142,240,207,.08));
+    }
+
+    .result.show { display: block; }
+
+    .score {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .score-ring {
+      width: 82px;
+      height: 82px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: #07111f;
+      background: conic-gradient(var(--brand) 0deg, var(--brand-2) 0deg, rgba(255,255,255,.08) 0deg 360deg);
+      position: relative;
+      transition: background .55s ease;
+    }
+
+    .score-ring::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      background: #dff8f0;
+      opacity: .92;
+    }
+
+    .score-ring b { position: relative; z-index: 1; }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .result-card {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.24);
+      color: #082031;
+    }
+
+    .result-card strong { display: block; margin-bottom: 6px; }
+
+    .status-row {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 36px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.18);
+      color: #082031;
+      font-weight: 700;
+      font-size: .9rem;
+    }
+
+    .status-text {
+      color: #082031;
+      font-weight: 600;
+    }
+
+    .status-text.error { color: #5a1111; }
+
+    .footer {
+      padding: 34px 0 56px;
+      color: var(--muted);
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1080px) {
+      .hero-grid,
+      .contact-wrap,
+      .grid-3,
+      .grid-2,
+      .form-grid,
+      .result-grid,
+      .belief-list,
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .meta-panel { position: static; }
+    }
+
+    @media (max-width: 760px) {
+      .nav-links { display: none; }
+      .section { padding: 64px 0; }
+      .card, .form-card { padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="brand" href="#top">
+        <div class="brand-mark">DLC</div>
+        <div>
+          Deep Lead Consulting
+          <small>Technical Depth. Human Leadership.</small>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#framework">Framework</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a class="btn btn-secondary" href="#contact">Contact Us</a>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero section">
+      <div class="container hero-grid">
+        <div class="hero-copy reveal">
+          <div class="eyebrow">D.L.C — Deep Lead Consulting</div>
+          <h1>We build systems, teams, and talent that last.</h1>
+          <p>
+            We combine senior engineering expertise, human-centered leadership, and skill-based talent evaluation to help organizations grow with clarity, resilience, and long-term impact.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#contact">Start a Conversation</a>
+            <a class="btn btn-secondary" href="#services">Explore Our Services</a>
+          </div>
+          <div class="pill-row">
+            <span class="pill">.NET Backend</span>
+            <span class="pill">Architecture</span>
+            <span class="pill">Leadership Support</span>
+            <span class="pill">Technical Recruitment</span>
+          </div>
+        </div>
+
+        <div class="hero-card reveal">
+          <div class="hero-stats">
+            <div class="stat">
+              <strong>Deep Engineering</strong>
+              <span class="muted">High-level consulting for backend systems, APIs, performance, and modernization.</span>
+            </div>
+            <div class="stat">
+              <strong>Human Leadership</strong>
+              <span class="muted">Mentoring, team clarity, and support for managers in technical environments.</span>
+            </div>
+            <div class="stat">
+              <strong>Talent Matching</strong>
+              <span class="muted">Skill-based evaluation for consultants, candidates, and team reinforcement.</span>
+            </div>
+            <div class="stat">
+              <strong>Long-Term Impact</strong>
+              <span class="muted">We focus on systems and teams that remain strong over time—not just quick delivery.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="section">
+      <div class="container">
+        <div class="reveal">
+          <div class="eyebrow">Who we are</div>
+          <h2>Technology creates real value when people, systems, and teams grow together.</h2>
+          <p class="lead">
+            We come from the field—product building, consulting missions, industrial systems, and corporate environments. We have seen what works, what breaks, and what lasts. D.L.C was created to bring that experience to organizations that want more than delivery: they want clarity, stability, and long-term impact.
+          </p>
+        </div>
+
+        <div class="grid-2" style="margin-top:30px;">
+          <div class="card reveal">
+            <div class="card-icon">◎</div>
+            <h3>Our vision</h3>
+            <p class="muted">
+              To become the partner companies trust to build systems, teams, and talent that last.
+            </p>
+            <ul class="clean">
+              <li>Deep technical excellence</li>
+              <li>Human-centered leadership</li>
+              <li>Long-term thinking</li>
+            </ul>
+          </div>
+          <div class="card reveal">
+            <div class="card-icon">↗</div>
+            <h3>Our mission</h3>
+            <p class="muted">
+              We help organizations build better systems and stronger teams by combining technical depth with human leadership and talent development.
+            </p>
+            <ul class="clean">
+              <li>Bring senior engineering expertise where it matters most</li>
+              <li>Stabilize and strengthen teams in complex environments</li>
+              <li>Identify, evaluate, and connect the right technical talent</li>
+              <li>Support leaders and future leaders in their growth</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="section">
+      <div class="container">
+        <div class="reveal">
+          <div class="eyebrow">What we do</div>
+          <h2>Three focused services. One integrated approach.</h2>
+        </div>
+
+        <div class="grid-3" style="margin-top:30px;">
+          <article class="card reveal">
+            <div class="card-icon">⚙</div>
+            <h3>Deep Engineering</h3>
+            <p class="muted">High-level technical consulting focused on precision, pragmatism, and real-world constraints.</p>
+            <ul class="clean">
+              <li>.NET backend development</li>
+              <li>API and system architecture</li>
+              <li>Performance and reliability</li>
+              <li>Legacy modernization and refactoring</li>
+              <li>Technical audits and diagnostics</li>
+            </ul>
+          </article>
+
+          <article class="card reveal">
+            <div class="card-icon">◌</div>
+            <h3>Team &amp; Leadership Support</h3>
+            <p class="muted">We help teams become clearer, stronger, and more resilient in demanding environments.</p>
+            <ul class="clean">
+              <li>Mentoring developers and future leads</li>
+              <li>Improving communication and collaboration</li>
+              <li>Bringing structure in chaotic contexts</li>
+              <li>Supporting managers in technical environments</li>
+              <li>Helping teams grow around the code they ship</li>
+            </ul>
+          </article>
+
+          <article class="card reveal">
+            <div class="card-icon">◈</div>
+            <h3>Talent &amp; Recruitment</h3>
+            <p class="muted">A specialized bridge between companies and technical talent, especially for .NET and backend roles.</p>
+            <ul class="clean">
+              <li>Technical screening and evaluation</li>
+              <li>Candidate matching and team fit</li>
+              <li>Clearer hiring decisions with less risk</li>
+              <li>Long-term relationships with clients and candidates</li>
+              <li>Role definition aligned with real team needs</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section values">
+      <div class="container">
+        <div class="reveal">
+          <div class="eyebrow">What we believe</div>
+          <h2>We value depth, clarity, trust, and sustainable growth.</h2>
+        </div>
+
+        <div class="belief-list reveal">
+          <div class="belief-item"><strong>Depth over buzzwords.</strong>Real expertise matters more than noise.</div>
+          <div class="belief-item"><strong>People over process.</strong>Methods matter, but people make the difference.</div>
+          <div class="belief-item"><strong>Clarity over complexity.</strong>We bring structure where things are messy.</div>
+          <div class="belief-item"><strong>Long-term over short-term.</strong>We think in years, not only in sprints.</div>
+          <div class="belief-item"><strong>Trust over transactions.</strong>We build relationships, not just contracts.</div>
+          <div class="belief-item"><strong>Calm in pressure.</strong>We show up with ownership, empathy, and honesty.</div>
+        </div>
+
+        <div class="card reveal" style="margin-top:28px;">
+          <p style="font-size:clamp(1.5rem, 3vw, 2.2rem); line-height:1.25; letter-spacing:-0.03em; max-width:900px; margin-bottom:0;">
+            “We don’t just help you deliver more. We help you build better—systems, teams, and futures.”
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="framework" class="section">
+      <div class="container">
+        <div class="reveal">
+          <div class="eyebrow">Skill framework</div>
+          <h2>A dynamic skill-based matching system for technical consulting and recruitment.</h2>
+          <p class="lead">
+            We evaluate needs and profiles through five skill clusters. This allows us to compute a relevant match between what a company needs, what a candidate offers, and what a team is missing.
+          </p>
+        </div>
+
+        <div class="grid-3" style="margin-top:30px;">
+          <div class="card reveal"><h3>Backend &amp; API Development</h3><p class="muted">C#, .NET, ASP.NET Core, REST APIs, Swagger, LINQ, EF Core, SQL Server, API design, error handling, simulation and forecasting.</p></div>
+          <div class="card reveal"><h3>Architecture &amp; Engineering Practices</h3><p class="muted">Layered Architecture, Clean Architecture, DDD concepts, domain modeling, system design, refactoring, testability, separation of concerns, code review.</p></div>
+          <div class="card reveal"><h3>Cloud, DevOps &amp; Delivery</h3><p class="muted">Azure, Azure DevOps, Git, CI/CD, Agile, Scrum, incident resolution.</p></div>
+          <div class="card reveal"><h3>Frontend &amp; UI Collaboration</h3><p class="muted">Razor, ASP.NET MVC, HTML, CSS, JavaScript, Bootstrap, jQuery.</p></div>
+          <div class="card reveal"><h3>Functional &amp; Product Skills</h3><p class="muted">Requirements analysis, root cause analysis, stakeholder communication, business-technical translation, product-oriented development, decision-support systems.</p></div>
+          <div class="card reveal"><h3>What the system does</h3><p class="muted">It maps selected skills to clusters, applies weights, computes a match score, and recommends the most relevant service focus for the request.</p></div>
+        </div>
+
+        <div class="framework-note reveal">
+          <strong style="display:block; color:var(--text); margin-bottom:8px;">How the matching works</strong>
+          1. Selected skills are mapped to the five clusters. 2. Each cluster contributes to a weighted score. 3. The system estimates the strongest service fit based on the requested collaboration type and the chosen skills. 4. D.L.C receives a more structured request, making follow-up faster and more relevant.
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="container contact-wrap">
+        <div class="meta-panel reveal">
+          <div class="eyebrow">Contact us</div>
+          <h2>Tell us what you need. We will map it to the right expertise.</h2>
+          <p class="lead" style="max-width:100%;">
+            Whether you need a consultant, a technical audit, recruitment support, or reinforcement for your team, use the form below to describe your needs and select the relevant skills.
+          </p>
+
+          <div class="meta-list">
+            <div class="meta-item"><strong>Consulting</strong><div class="muted">Senior engineering expertise for critical technical challenges.</div></div>
+            <div class="meta-item"><strong>Leadership Support</strong><div class="muted">Clearer teams, stronger communication, and healthier technical environments.</div></div>
+            <div class="meta-item"><strong>Talent Matching</strong><div class="muted">Skill-based evaluation to connect the right people to the right environments.</div></div>
+          </div>
+        </div>
+
+        <div class="form-card reveal">
+          <form id="dlcForm">
+            <div class="form-grid">
+              <div class="field">
+                <label for="name">Name</label>
+                <input id="name" name="name" type="text" placeholder="Your name" required />
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="you@company.com" required />
+              </div>
+              <div class="field">
+                <label for="company">Company <span class="muted">(optional)</span></label>
+                <input id="company" name="company" type="text" placeholder="Company name" />
+              </div>
+              <div class="field">
+                <label for="requestType">What are you looking for?</label>
+                <select id="requestType" name="requestType" required>
+                  <option value="">Select an option</option>
+                  <option value="developer">Hire a developer</option>
+                  <option value="consultant">Hire a consultant</option>
+                  <option value="audit">Technical audit</option>
+                  <option value="reinforcement">Team reinforcement</option>
+                  <option value="recruitment">Recruitment support</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div class="field-full">
+                <label>Required skills <span class="muted">(select all that apply)</span></label>
+
+                <div class="cluster">
+                  <h4>Backend &amp; API Development</h4>
+                  <div class="checks">
+                    <label class="check"><input type="checkbox" name="skills" value="C#" data-cluster="backend"><span>C#</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value=".NET" data-cluster="backend"><span>.NET</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="ASP.NET Core" data-cluster="backend"><span>ASP.NET Core</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="REST APIs" data-cluster="backend"><span>REST APIs</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Swagger / OpenAPI" data-cluster="backend"><span>Swagger / OpenAPI</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="LINQ" data-cluster="backend"><span>LINQ</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="EF Core" data-cluster="backend"><span>EF Core</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="SQL Server" data-cluster="backend"><span>SQL Server</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="API Integration" data-cluster="backend"><span>API Integration</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Error Handling" data-cluster="backend"><span>Error Handling</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="API Contract Design" data-cluster="backend"><span>API Contract Design</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Simulation &amp; Forecasting" data-cluster="backend"><span>Simulation &amp; Forecasting</span></label>
+                  </div>
+                </div>
+
+                <div class="cluster">
+                  <h4>Architecture &amp; Engineering Practices</h4>
+                  <div class="checks">
+                    <label class="check"><input type="checkbox" name="skills" value="Layered Architecture" data-cluster="architecture"><span>Layered Architecture</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Clean Architecture" data-cluster="architecture"><span>Clean Architecture</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="DDD Concepts" data-cluster="architecture"><span>DDD Concepts</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Domain Modeling" data-cluster="architecture"><span>Domain Modeling</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="System Design" data-cluster="architecture"><span>System Design</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Refactoring" data-cluster="architecture"><span>Refactoring</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Testability" data-cluster="architecture"><span>Testability</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Separation of Concerns" data-cluster="architecture"><span>Separation of Concerns</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Code Review" data-cluster="architecture"><span>Code Review</span></label>
+                  </div>
+                </div>
+
+                <div class="cluster">
+                  <h4>Cloud, DevOps &amp; Delivery</h4>
+                  <div class="checks">
+                    <label class="check"><input type="checkbox" name="skills" value="Azure" data-cluster="cloud"><span>Azure</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Azure DevOps" data-cluster="cloud"><span>Azure DevOps</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Git" data-cluster="cloud"><span>Git</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="CI/CD" data-cluster="cloud"><span>CI/CD</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Agile" data-cluster="cloud"><span>Agile</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Scrum" data-cluster="cloud"><span>Scrum</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Incident Resolution" data-cluster="cloud"><span>Incident Resolution</span></label>
+                  </div>
+                </div>
+
+                <div class="cluster">
+                  <h4>Frontend &amp; UI Collaboration</h4>
+                  <div class="checks">
+                    <label class="check"><input type="checkbox" name="skills" value="Razor" data-cluster="frontend"><span>Razor</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="ASP.NET MVC" data-cluster="frontend"><span>ASP.NET MVC</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="HTML" data-cluster="frontend"><span>HTML</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="CSS" data-cluster="frontend"><span>CSS</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="JavaScript" data-cluster="frontend"><span>JavaScript</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Bootstrap" data-cluster="frontend"><span>Bootstrap</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="jQuery" data-cluster="frontend"><span>jQuery</span></label>
+                  </div>
+                </div>
+
+                <div class="cluster">
+                  <h4>Functional &amp; Product Skills</h4>
+                  <div class="checks">
+                    <label class="check"><input type="checkbox" name="skills" value="Requirements Analysis" data-cluster="functional"><span>Requirements Analysis</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Root Cause Analysis" data-cluster="functional"><span>Root Cause Analysis</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Stakeholder Communication" data-cluster="functional"><span>Stakeholder Communication</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Business-Technical Translation" data-cluster="functional"><span>Business-Technical Translation</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Product-Oriented Development" data-cluster="functional"><span>Product-Oriented Development</span></label>
+                    <label class="check"><input type="checkbox" name="skills" value="Decision-Support Systems" data-cluster="functional"><span>Decision-Support Systems</span></label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field-full">
+                <label for="details">Describe your needs <span class="muted">(optional)</span></label>
+                <textarea id="details" name="details" placeholder="Tell us about your context, goals, and current challenges."></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <div class="helper">The visitor only sees the match result. The structured payload is sent in the background to your configured webhook.</div>
+              <button id="submitButton" type="submit" class="btn btn-primary">Send Request</button>
+            </div>
+          </form>
+
+          <div id="matchResult" class="result" aria-live="polite">
+            <div class="score">
+              <div id="scoreRing" class="score-ring"><b id="scoreValue">0%</b></div>
+              <div>
+                <h3 id="resultTitle" style="margin-bottom:6px;">Preliminary match result</h3>
+                <div id="resultText" class="muted">Your selection will generate a service recommendation here.</div>
+              </div>
+            </div>
+
+            <div class="result-grid">
+              <div class="result-card">
+                <strong>Primary Service Fit</strong>
+                <span id="fitService">—</span>
+              </div>
+              <div class="result-card">
+                <strong>Dominant Skill Cluster</strong>
+                <span id="fitCluster">—</span>
+              </div>
+              <div class="result-card">
+                <strong>Delivery Status</strong>
+                <span id="fitNext">Waiting</span>
+              </div>
+            </div>
+
+            <div class="status-row">
+              <div id="statusPill" class="status-pill">Pending</div>
+              <div id="submitStatus" class="status-text">Complete the form to send your request securely.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-row">
+      <div>
+        <strong style="color:var(--text);">D.L.C — Deep Lead Consulting</strong><br />
+        Technical Depth. Human Leadership. Long-Term Impact.
+      </div>
+      <div>© <span id="year"></span> Deep Lead Consulting</div>
+    </div>
+  </footer>
+
+ <script>
+  const DLC_CONFIG = {
+    API_URL: 'https://your-worker-or-function.example.com/api/client-intake',
+    REQUEST_TIMEOUT_MS: 15000,
+    SCHEMA_VERSION: '1.0.0',
+    SOURCE_PAGE: 'dlc_landing_page',
+    PAGE_VERSION: '2026.04.07'
+  };
+
+  $(function () {
+    $('#year').text(new Date().getFullYear());
+
+    // Smooth scroll
+    $('a[href^="#"]').on('click', function (e) {
+      var target = $(this.getAttribute('href'));
+      if (target.length) {
+        e.preventDefault();
+        $('html, body').animate({ scrollTop: target.offset().top - 74 }, 550);
+      }
+    });
+
+    function revealOnScroll() {
+      $('.reveal').each(function () {
+        var top = this.getBoundingClientRect().top;
+        if (top < window.innerHeight - 70) {
+          $(this).addClass('is-visible');
+        }
+      });
+    }
+
+    revealOnScroll();
+    $(window).on('scroll resize', revealOnScroll);
+
+    const clusterLabels = {
+      backend: 'Backend & API Development',
+      architecture: 'Architecture & Engineering Practices',
+      cloud: 'Cloud, DevOps & Delivery',
+      frontend: 'Frontend & UI Collaboration',
+      functional: 'Functional & Product Skills'
+    };
+
+    const requestWeights = {
+      developer: { backend: 35, architecture: 20, cloud: 15, frontend: 15, functional: 15 },
+      consultant: { backend: 25, architecture: 30, cloud: 15, frontend: 10, functional: 20 },
+      audit: { backend: 20, architecture: 35, cloud: 20, frontend: 5, functional: 20 },
+      reinforcement: { backend: 25, architecture: 20, cloud: 15, frontend: 10, functional: 30 },
+      recruitment: { backend: 20, architecture: 15, cloud: 10, frontend: 10, functional: 45 },
+      other: { backend: 20, architecture: 20, cloud: 20, frontend: 20, functional: 20 }
+    };
+
+    const serviceCopy = {
+      developer: 'Developer placement or technical reinforcement',
+      consultant: 'Senior consulting engagement',
+      audit: 'Technical audit and diagnostic support',
+      reinforcement: 'Team reinforcement and leadership support',
+      recruitment: 'Talent evaluation and recruitment support',
+      other: 'Tailored consulting conversation'
+    };
+
+    function buildPayload(requestType, dominantCluster, finalScore, guidance) {
+      const selectedSkills = [];
+
+      $('input[name="skills"]:checked').each(function () {
+        selectedSkills.push({
+          name: $(this).val(),
+          cluster: $(this).data('cluster')
+        });
+      });
+
+      return {
+        schemaVersion: DLC_CONFIG.SCHEMA_VERSION,
+        profileType: 'client',
+        sourcePage: DLC_CONFIG.SOURCE_PAGE,
+        pageVersion: DLC_CONFIG.PAGE_VERSION,
+        submissionId: crypto.randomUUID(),
+        submittedAt: new Date().toISOString(),
+
+        channel: 'client-intake',
+        target: 'DeepLeadConsulting@outlook.com',
+
+        client: {
+          contactName: $('#name').val().trim(),
+          email: $('#email').val().trim(),
+          companyName: $('#company').val().trim()
+        },
+
+        skills: selectedSkills,
+
+        intake: {
+          requestType: requestType,
+          requestLabel: $('#requestType option:selected').text(),
+          details: $('#details').val().trim()
+        },
+
+        assessment: null,
+
+        computed: {
+          matchScore: finalScore,
+          serviceFit: serviceCopy[requestType] || serviceCopy.other,
+          dominantCluster: dominantCluster,
+          dominantClusterLabel: clusterLabels[dominantCluster] || dominantCluster,
+          guidance: guidance,
+          selectedSkillCount: selectedSkills.length,
+          emailSubject:
+            'CLIENT | ' +
+            $('#requestType option:selected').text() +
+            ' | ' +
+            dominantCluster.toUpperCase() +
+            ' | ' +
+            ($('#company').val().trim() || 'Independent')
+        },
+
+        meta: {
+          userAgent: navigator.userAgent
+        }
+      };
+    }
+
+    function sendPayload(payload) {
+      if (!DLC_CONFIG.API_URL) {
+        return Promise.reject(new Error('API URL is not configured.'));
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), DLC_CONFIG.REQUEST_TIMEOUT_MS);
+
+      return fetch(DLC_CONFIG.API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      })
+      .then(res => {
+        clearTimeout(timeoutId);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(data => {
+        if (!data || data.ok !== true) {
+          throw new Error('Submission not accepted.');
+        }
+        return data;
+      })
+      .catch(err => {
+        clearTimeout(timeoutId);
+        if (err.name === 'AbortError') throw new Error('Request timed out.');
+        throw err;
+      });
+    }
+
+    function setScoreRing(score) {
+      const deg = Math.round((Math.max(0, Math.min(100, score)) / 100) * 360);
+      $('#scoreRing').css(
+        'background',
+        `conic-gradient(var(--brand) 0deg, var(--brand-2) ${deg}deg, rgba(255,255,255,.08) ${deg}deg 360deg)`
+      );
+    }
+
+    function setStatus(kind, text, nextStep) {
+      const pill = $('#statusPill');
+      const statusText = $('#submitStatus');
+
+      pill.text(kind);
+      statusText.text(text).removeClass('error');
+
+      if (kind === 'Sent') {
+        pill.css({ background: 'rgba(159,243,200,.65)', color: '#083020' });
+      } else if (kind === 'Error') {
+        pill.css({ background: 'rgba(255,144,144,.70)', color: '#3f0909' });
+        statusText.addClass('error');
+      }
+
+      if (nextStep) $('#fitNext').text(nextStep);
+    }
+
+    $('#dlcForm').on('submit', function (e) {
+      e.preventDefault();
+
+      const name = $('#name').val().trim();
+      const email = $('#email').val().trim();
+      const requestType = $('#requestType').val();
+      const selected = $('input[name="skills"]:checked');
+
+      if (!name) return alert('Please enter your name.');
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert('Invalid email.');
+      if (!requestType) return alert('Select a request type.');
+      if (!selected.length) return alert('Select at least one skill.');
+
+      const clusterCounts = {
+        backend: 0,
+        architecture: 0,
+        cloud: 0,
+        frontend: 0,
+        functional: 0
+      };
+
+      selected.each(function () {
+        clusterCounts[$(this).data('cluster')]++;
+      });
+
+      const total = selected.length;
+      const weights = requestWeights[requestType];
+
+      let score = 0;
+      let dominantCluster = 'backend';
+      let max = 0;
+
+      Object.entries(clusterCounts).forEach(([cluster, count]) => {
+        const ratio = count / total;
+        score += ratio * weights[cluster];
+        if (count > max) {
+          max = count;
+          dominantCluster = cluster;
+        }
+      });
+
+      score = Math.min(98, Math.round(score + (total * 2)));
+
+      let guidance = 'Exploratory discussion recommended.';
+      if (score >= 80) guidance = 'Strong match. We recommend a focused qualification call.';
+      else if (score >= 60) guidance = 'Good match. We refine scope together.';
+      else guidance = 'Needs clarification. Context will help refine needs.';
+
+      const payload = buildPayload(requestType, dominantCluster, score, guidance);
+
+      $('#scoreValue').text(score + '%');
+      $('#fitService').text(payload.computed.serviceFit);
+      $('#fitCluster').text(payload.computed.dominantClusterLabel);
+      $('#resultText').text(guidance);
+      $('#matchResult').addClass('show');
+
+      setScoreRing(score);
+      setStatus('Sending', 'Sending securely...', 'Sending');
+      $('#submitButton').prop('disabled', true);
+
+      sendPayload(payload)
+        .then(data => {
+          setStatus('Sent', 'Request successfully delivered.', 'Delivered');
+        })
+        .catch(err => {
+          setStatus('Error', err.message, 'Failed');
+        })
+        .finally(() => {
+          $('#submitButton').prop('disabled', false);
+        });
+    });
+  });
+</script>
+</body>
+</html>
