@@ -882,7 +882,10 @@
 
             <div class="form-actions">
              
-             <div class="cf-turnstile" data-sitekey="0x4AAAAAAC13jXud4D3a9xye"></div>
+                <div class="cf-turnstile"
+                     data-sitekey="0x4AAAAAAC13jXud4D3a9xye"
+                     data-callback="onTurnstileSuccess">
+                </div>
               <button id="submitButton" type="submit" class="btn btn-primary">Send Request</button>
             </div>
           </form>
@@ -932,6 +935,12 @@
   </footer>
 
  <script>
+
+     let turnstileToken = null;
+
+function onTurnstileSuccess(token) {
+  turnstileToken = token;
+}
   const DLC_CONFIG = {
     API_URL: 'https://dlc-client-intake-worker.deepleadconsulting.workers.dev/api/client-intake',
     REQUEST_TIMEOUT_MS: 15000,
@@ -1154,9 +1163,9 @@
       else if (score >= 60) guidance = 'Good match. We refine scope together.';
       else guidance = 'Needs clarification. Context will help refine needs.';
 		const payload = {
-		  ...buildPayload(requestType, dominantCluster, score, guidance),
-		  turnstileToken: document.querySelector('[name="cf-turnstile-response"]')?.value || null
-		};
+          ...buildPayload(requestType, dominantCluster, score, guidance),
+          turnstileToken: turnstileToken
+        };
 
 		$('#scoreValue').text(score + '%');
 		$('#fitService').text(payload.computed.serviceFit);
@@ -1173,8 +1182,7 @@
 		  $('#submitButton').prop('disabled', false);
 		  return;
 		}
-
-	function sendPayload(payload) {
+function sendPayload(payload) {
   if (!DLC_CONFIG.API_URL) {
     return Promise.reject(new Error('API URL is not configured.'));
   }
@@ -1215,6 +1223,8 @@
       if (err.name === 'AbortError') throw new Error('Request timed out.');
       throw err;
     });
+}
+	
 }
     });
   });
