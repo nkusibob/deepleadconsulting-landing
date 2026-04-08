@@ -1055,28 +1055,32 @@ $(function () {
       body: JSON.stringify(payload),
       signal: controller.signal
     })
-    .then(async res => {
-      clearTimeout(timeoutId);
-      const data = await res.json().catch(() => null);
+       .then(async res => {
+          clearTimeout(timeoutId);
 
-      if (!res.ok) {
-        throw new Error(
-          data?.error ||
-          (data?.codes ? "Turnstile failed: " + data.codes.join(", ") : "HTTP " + res.status)
-        );
-      }
+          const data = await res.json().catch(() => null);
 
-      if (!data || data.ok !== true) {
-        throw new Error('Submission not accepted.');
-      }
+          if (!res.ok) {
+            const message =
+              data?.error ||
+              data?.message ||
+              (Array.isArray(data?.codes) && data.codes.length
+                ? 'Turnstile failed: ' + data.codes.join(', ')
+                : 'HTTP ' + res.status);
+            throw new Error(message);
+          }
 
-      return data;
-    })
-    .catch(err => {
-      clearTimeout(timeoutId);
-      if (err.name === 'AbortError') throw new Error('Request timed out.');
-      throw err;
-    });
+          if (!data || data.ok !== true) {
+            throw new Error('Submission not accepted.');
+          }
+
+          return data;
+        })
+        .catch(err => {
+          clearTimeout(timeoutId);
+          if (err.name === 'AbortError') throw new Error('Request timed out.');
+          throw err;
+        });
   }
 
   function setStatus(kind, text) {
@@ -1134,21 +1138,17 @@ $(function () {
     setStatus('Sending', 'Sending securely...');
     $('#submitButton').prop('disabled', true);
 
-    sendPayload(payload)
-      .then(() => {
-        setStatus('Sent', 'Your request was sent successfully');
-      })
-      .catch(err => {
-        setStatus('Error', err.message);
-      })
-      .finally(() => {
-        $('#submitButton').prop('disabled', false);
-      });
-
-  });
-
-});
-    </script>
+  sendPayload(payload)
+		  .then(() => {
+		    setStatus('Sent', 'Request sent successfully. We will follow up shortly.', 'Review in progress');
+		    $('#submitButton').prop('disabled', false);
+		  })
+		  .catch(err => {
+		    setStatus('Error', err.message || 'Unable to send request.', 'Please try again');
+		    $('#submitButton').prop('disabled', false);
+		  });
+	}
+    });</script>
 
 </body>
 
