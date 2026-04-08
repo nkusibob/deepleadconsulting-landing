@@ -976,7 +976,9 @@
 
                             <div class="cf-turnstile"
                                  data-sitekey="0x4AAAAAAC13jXud4D3a9xye"
-                                 data-callback="onTurnstileSuccess">
+                                 data-callback="onTurnstileSuccess"
+                                 data-error-callback="onTurnstileError"
+                                 data-expired-callback="onTurnstileExpired">
                             </div>
                             <button id="submitButton" type="submit" class="btn btn-primary">Send Request</button>
                         </div>
@@ -1030,6 +1032,21 @@ let turnstileToken = null;
 
 function onTurnstileSuccess(token) {
   turnstileToken = token;
+  console.log('[Turnstile] success, token received:', token ? token.slice(0, 12) + '...' : token);
+}
+
+function onTurnstileError(errorCode) {
+  turnstileToken = null;
+  console.error('[Turnstile] error callback:', errorCode);
+  // optional UI feedback:
+  // setStatus('Error', 'Security check failed. Please retry.', 'Turnstile error');
+}
+
+function onTurnstileExpired() {
+  turnstileToken = null;
+  console.warn('[Turnstile] token expired');
+  // optional UI feedback:
+  // setStatus('Error', 'Security token expired. Please verify again.', 'Token expired');
 }
   const DLC_CONFIG = {
     API_URL: 'https://dlc-client-intake-worker.deepleadconsulting.workers.dev/api/client-intake',
