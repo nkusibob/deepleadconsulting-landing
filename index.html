@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>D.L.C — Deep Lead Consulting</title>
   <meta name="description" content="D.L.C — Deep Lead Consulting. Technical Depth. Human Leadership. Long-Term Impact." />
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <style>
     :root {
@@ -929,7 +930,7 @@
       <div>© <span id="year"></span> Deep Lead Consulting</div>
     </div>
   </footer>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
  <script>
   const DLC_CONFIG = {
     API_URL: 'https://dlc-client-intake-worker.deepleadconsulting.workers.dev/api/client-intake',
@@ -1153,10 +1154,15 @@
       else if (score >= 60) guidance = 'Good match. We refine scope together.';
       else guidance = 'Needs clarification. Context will help refine needs.';
 
-      const payload = {
-	  buildPayload(requestType, dominantCluster, score, guidance),
+		const payload = {
+	  ...buildPayload(requestType, dominantCluster, score, guidance),
 	  turnstileToken: document.querySelector('[name="cf-turnstile-response"]')?.value || null
-	  };
+	};
+
+	if (!payload.turnstileToken) {
+	  setStatus('Error', 'Please complete the security check.', 'Security check required');
+	  return;
+	}
 
       $('#scoreValue').text(score + '%');
       $('#fitService').text(payload.computed.serviceFit);
