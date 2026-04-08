@@ -1153,37 +1153,69 @@
       if (score >= 80) guidance = 'Strong match. We recommend a focused qualification call.';
       else if (score >= 60) guidance = 'Good match. We refine scope together.';
       else guidance = 'Needs clarification. Context will help refine needs.';
-
 		const payload = {
-	  ...buildPayload(requestType, dominantCluster, score, guidance),
-	  turnstileToken: document.querySelector('[name="cf-turnstile-response"]')?.value || null
-	};
+		  ...buildPayload(requestType, dominantCluster, score, guidance),
+		  turnstileToken: document.querySelector('[name="cf-turnstile-response"]')?.value || null
+		};
 
-	if (!payload.turnstileToken) {
-	  setStatus('Error', 'Please complete the security check.', 'Security check required');
-	  return;
-	}
+		$('#scoreValue').text(score + '%');
+		$('#fitService').text(payload.computed.serviceFit);
+		$('#fitCluster').text(payload.computed.dominantClusterLabel);
+		$('#resultText').text(guidance);
+		$('#matchResult').addClass('show');
 
-      $('#scoreValue').text(score + '%');
-      $('#fitService').text(payload.computed.serviceFit);
-      $('#fitCluster').text(payload.computed.dominantClusterLabel);
-      $('#resultText').text(guidance);
-      $('#matchResult').addClass('show');
+		setScoreRing(score);
+		setStatus('Sending', 'Sending securely...', 'Sending');
+		$('#submitButton').prop('disabled', true);
 
-      setScoreRing(score);
-      setStatus('Sending', 'Sending securely...', 'Sending');
-      $('#submitButton').prop('disabled', true);
+		if (!payload.turnstileToken) {
+		  setStatus('Error', 'Please complete the security check.', 'Security check required');
+		  $('#submitButton').prop('disabled', false);
+		  return;
+		}
 
-      sendPayload(payload)
-        .then(data => {
-          setStatus('Sent', 'Request successfully delivered.', 'Delivered');
-        })
-        .catch(err => {
-          setStatus('Error', err.message, 'Failed');
-        })
-        .finally(() => {
-          $('#submitButton').prop('disabled', false);
-        });
+			function sendPayload(payload) {
+		  if (!DLC_CONFIG.API_URL) {
+			return Promise.reject(new Error('API URL is not configured.'));
+		  }
+
+		  const controller = new AbortController();
+		  const timeoutId = setTimeout(() => controller.abort(), DLC_CONFIG.REQUEST_TIMEOUT_MS);
+
+		  return fetch(DLC_CONFIG.API_URL, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(payload),
+			signal: controller.signal
+		  })
+			.then(async res => {
+			  clearTimeout(timeoutId);
+
+			  const data = await res.json().catch(() => null);
+
+			  if (!res.ok) {
+				const message =
+				  data?.error ||
+				  data?.message ||
+				  (Array.isArray(data?.codes) && data.codes.length
+					? 'Turnstile failed: ' + data.codes.join(', ')
+					: 'HTTP ' + res.status);
+
+				throw new Error(message);
+			  }
+
+			  if (!data || data.ok !== true) {
+				throw new Error('Submission not accepted.');
+			  }
+
+			  return data;
+			})
+			.catch(err => {
+			  clearTimeout(timeoutId);
+			  if (err.name === 'AbortError') throw new Error('Request timed out.');
+			  throw err;
+			});
+		}
     });
   });
 </script>
