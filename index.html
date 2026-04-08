@@ -880,7 +880,8 @@
             </div>
 
             <div class="form-actions">
-              <div class="helper">The visitor only sees the match result. The structured payload is sent in the background to your configured webhook.</div>
+             
+             <div class="cf-turnstile" data-sitekey="0x4AAAAAAC13jXud4D3a9xye"></div>
               <button id="submitButton" type="submit" class="btn btn-primary">Send Request</button>
             </div>
           </form>
@@ -928,7 +929,7 @@
       <div>© <span id="year"></span> Deep Lead Consulting</div>
     </div>
   </footer>
-
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
  <script>
   const DLC_CONFIG = {
     API_URL: 'https://dlc-client-intake-worker.deepleadconsulting.workers.dev/api/client-intake',
@@ -1152,7 +1153,10 @@
       else if (score >= 60) guidance = 'Good match. We refine scope together.';
       else guidance = 'Needs clarification. Context will help refine needs.';
 
-      const payload = buildPayload(requestType, dominantCluster, score, guidance);
+      const payload = {
+	  buildPayload(requestType, dominantCluster, score, guidance),
+	  turnstileToken: document.querySelector('[name="cf-turnstile-response"]')?.value || null
+	  };
 
       $('#scoreValue').text(score + '%');
       $('#fitService').text(payload.computed.serviceFit);
