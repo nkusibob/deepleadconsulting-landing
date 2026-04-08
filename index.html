@@ -1293,6 +1293,7 @@ function onTurnstileExpired() {
 		setScoreRing(score);
 		setStatus('Sending', 'Sending securely...', 'Sending');
 		$('#submitButton').prop('disabled', true);
+        console.log('[Submit] turnstileToken present?', !!payload.turnstileToken, payload.turnstileToken);
 
 		if (!payload.turnstileToken) {
 		  setStatus('Error', 'Please complete the security check.', 'Security check required');
