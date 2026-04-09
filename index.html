@@ -535,6 +535,16 @@
                 z-index: 1;
             }
 
+        select {
+            color: black;
+            background-color: white;
+        }
+
+            select option {
+                color: black;
+                background-color: white;
+            }
+
         .result-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -1056,7 +1066,7 @@ function onTurnstileExpired() {
     SOURCE_PAGE: 'dlc_landing_page',
     PAGE_VERSION: '2026.04.07'
   };
-  
+
   $(function () {
     $('#year').text(new Date().getFullYear());
 
@@ -1142,7 +1152,7 @@ function onTurnstileExpired() {
           details: $('#details').val().trim()
         },
 
-       
+
 
         meta: {
           userAgent: navigator.userAgent
