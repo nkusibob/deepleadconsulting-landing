@@ -1270,8 +1270,8 @@ function onTurnstileExpired() {
         };
 
 		$('#scoreValue').text(score + '%');
-		$('#fitService').text(payload.computed.serviceFit);
-		$('#fitCluster').text(payload.computed.dominantClusterLabel);
+		$('#fitService').text(serviceCopy[requestType] || serviceCopy.other);
+        $('#fitCluster').text(clusterLabels[dominantCluster] || dominantCluster);
 		$('#resultText').text(guidance);
 		$('#matchResult').addClass('show');
 
