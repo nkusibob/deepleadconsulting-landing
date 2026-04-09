@@ -976,6 +976,7 @@
 
                             <div class="cf-turnstile"
                                  data-sitekey="0x4AAAAAAC13jXud4D3a9xye"
+                                 data-action="client-intake"
                                  data-callback="onTurnstileSuccess"
                                  data-error-callback="onTurnstileError"
                                  data-expired-callback="onTurnstileExpired">
@@ -1055,7 +1056,7 @@ function onTurnstileExpired() {
     SOURCE_PAGE: 'dlc_landing_page',
     PAGE_VERSION: '2026.04.07'
   };
-
+  
   $(function () {
     $('#year').text(new Date().getFullYear());
 
@@ -1141,23 +1142,7 @@ function onTurnstileExpired() {
           details: $('#details').val().trim()
         },
 
-        assessment: null,
-
-        computed: {
-          matchScore: finalScore,
-          serviceFit: serviceCopy[requestType] || serviceCopy.other,
-          dominantCluster: dominantCluster,
-          dominantClusterLabel: clusterLabels[dominantCluster] || dominantCluster,
-          guidance: guidance,
-          selectedSkillCount: selectedSkills.length,
-          emailSubject:
-            'CLIENT | ' +
-            $('#requestType option:selected').text() +
-            ' | ' +
-            dominantCluster.toUpperCase() +
-            ' | ' +
-            ($('#company').val().trim() || 'Independent')
-        },
+       
 
         meta: {
           userAgent: navigator.userAgent
