@@ -535,26 +535,34 @@
                 z-index: 1;
             }
 
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid rgba(255,255,255,.1);
+            background: rgba(255,255,255,.04);
+            color: var(--text);
+            border-radius: 14px;
+            padding: 14px;
+            font: inherit;
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+
         select {
             appearance: none;
             -webkit-appearance: none;
             -moz-appearance: none;
-            width: 100%;
-            border: 1px solid rgba(255,255,255,.1);
-            background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03)), var(--panel-strong);
-            color: var(--text);
-            border-radius: 14px;
-            padding: 14px 44px 14px 14px;
-            font: inherit;
-            outline: none;
-            transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
-            background-image: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03)), linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
-            background-position: 0 0, calc(100% - 22px) calc(50% - 3px), calc(100% - 16px) calc(50% - 3px);
-            background-size: 100% 100%, 6px 6px, 6px 6px;
+            padding-right: 44px;
+            background: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%), rgba(255,255,255,.04);
+            background-position: calc(100% - 20px) 50%, calc(100% - 14px) 50%, 0 0;
+            background-size: 6px 6px, 6px 6px, 100% 100%;
             background-repeat: no-repeat;
         }
 
-            select:focus {
+            input:focus,
+            select:focus,
+            textarea:focus {
                 border-color: rgba(124,201,255,.5);
                 box-shadow: 0 0 0 4px rgba(124,201,255,.10);
             }
@@ -910,7 +918,7 @@
                             <div class="field">
                                 <label for="requestType">What are you looking for?</label>
                                 <select id="requestType" name="requestType" required>
-                                    <option value="">Select an option</option>
+                                    <option value="" disabled selected>Select an option</option>
                                     <option value="developer">Hire a developer</option>
                                     <option value="consultant">Hire a consultant</option>
                                     <option value="audit">Technical audit</option>
