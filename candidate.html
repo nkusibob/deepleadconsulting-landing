@@ -1,0 +1,1268 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>D.L.C — Candidate Network</title>
+    <meta name="description"
+          content="Join the Deep Lead Consulting candidate network. Share your strengths, availability, and preferred role so we can route you toward the right opportunities and assessment track." />
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        :root {
+            --bg: #07111f;
+            --bg-soft: #0d1830;
+            --panel: rgba(15, 27, 49, 0.82);
+            --panel-strong: #101d36;
+            --line: rgba(255,255,255,0.10);
+            --text: #eef4ff;
+            --muted: #b8c6e7;
+            --brand: #7cc9ff;
+            --brand-2: #8ef0cf;
+            --brand-3: #9aa9ff;
+            --ok: #9ff3c8;
+            --warn: #ffd99a;
+            --danger: #ff9f9f;
+            --shadow: 0 28px 72px rgba(0,0,0,.28);
+            --radius: 22px;
+            --max: 1220px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text);
+            background: radial-gradient(circle at top left, rgba(124,201,255,.14), transparent 26%), radial-gradient(circle at top right, rgba(142,240,207,.08), transparent 24%), linear-gradient(180deg, #06101c 0%, #091425 32%, #0d1730 100%);
+            line-height: 1.6;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        .container {
+            width: min(var(--max), calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        .section {
+            padding: 84px 0;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: rgba(6, 12, 24, 0.72);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+        .nav {
+            min-height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(124,201,255,.26), rgba(142,240,207,.16));
+            border: 1px solid rgba(255,255,255,.12);
+            box-shadow: var(--shadow);
+            font-size: .95rem;
+        }
+
+        .brand small {
+            display: block;
+            color: var(--muted);
+            font-weight: 600;
+            font-size: .8rem;
+            margin-top: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            color: var(--muted);
+            font-size: .95rem;
+        }
+
+            .nav-links a:hover {
+                color: var(--text);
+            }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 48px;
+            padding: 0 20px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform .2s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
+        }
+
+            .btn:hover {
+                transform: translateY(-1px);
+            }
+
+            .btn:disabled {
+                opacity: .6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .btn-primary {
+            color: #06131f;
+            background: linear-gradient(135deg, var(--brand), var(--brand-2));
+            box-shadow: 0 10px 30px rgba(124,201,255,.24);
+        }
+
+        .btn-secondary {
+            color: var(--text);
+            background: rgba(255,255,255,.04);
+            border-color: rgba(255,255,255,.1);
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 18px;
+            font-size: .78rem;
+            font-weight: 800;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--brand);
+        }
+
+            .eyebrow::before {
+                content: "";
+                width: 30px;
+                height: 1px;
+                background: linear-gradient(90deg, var(--brand), transparent);
+            }
+
+        h1, h2, h3, h4, p {
+            margin-top: 0;
+        }
+
+        h1 {
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            line-height: 1.03;
+            letter-spacing: -.05em;
+            margin-bottom: 18px;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            line-height: 1.1;
+            letter-spacing: -.04em;
+            margin-bottom: 18px;
+        }
+
+        h3 {
+            font-size: 1.12rem;
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        .lead {
+            font-size: 1.12rem;
+            color: var(--muted);
+            max-width: 780px;
+        }
+
+        .hero {
+            padding: 52px 0 28px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.08fr .92fr;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .glass, .card, .form-card, .result {
+            background: var(--panel);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-copy {
+            padding: 24px 0;
+        }
+
+            .hero-copy p {
+                color: var(--muted);
+                font-size: 1.06rem;
+                max-width: 760px;
+            }
+
+        .hero-actions {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .pill-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .pill {
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,.08);
+            background: rgba(255,255,255,.04);
+            color: #dce8ff;
+            font-size: .92rem;
+        }
+
+        .hero-panel {
+            padding: 18px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .mini-card {
+            padding: 20px;
+            border-radius: 18px;
+            background: rgba(255,255,255,.03);
+            border: 1px solid rgba(255,255,255,.08);
+        }
+
+            .mini-card strong {
+                display: block;
+                font-size: 1.08rem;
+                margin-bottom: 6px;
+            }
+
+        .grid-2, .grid-3 {
+            display: grid;
+            gap: 22px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .card {
+            padding: 28px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: inline-grid;
+            place-items: center;
+            margin-bottom: 18px;
+            background: linear-gradient(135deg, rgba(124,201,255,.18), rgba(142,240,207,.12));
+            border: 1px solid rgba(255,255,255,.08);
+            font-size: 1.15rem;
+        }
+
+        .list {
+            padding-left: 18px;
+            margin-bottom: 0;
+            color: var(--muted);
+        }
+
+            .list li {
+                margin-bottom: 10px;
+            }
+
+        .quote {
+            padding: 24px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(124,201,255,.10), rgba(142,240,207,.06));
+            border: 1px solid rgba(255,255,255,.08);
+            font-size: 1.05rem;
+            color: var(--text);
+        }
+
+        .join-wrap {
+            display: grid;
+            grid-template-columns: .88fr 1.12fr;
+            gap: 26px;
+            align-items: start;
+        }
+
+        .side-panel {
+            position: sticky;
+            top: 98px;
+        }
+
+        .stack {
+            display: grid;
+            gap: 14px;
+            margin-top: 24px;
+        }
+
+            .stack .mini-card {
+                padding: 18px;
+            }
+
+        .form-card {
+            background: var(--panel-strong);
+            padding: 28px;
+            border-radius: 24px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .field, .field-full {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .field-full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: .92rem;
+            font-weight: 700;
+            color: #f4f7ff;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            border: 1px solid rgba(255,255,255,.10);
+            background: rgba(255,255,255,.04);
+            color: var(--text);
+            border-radius: 14px;
+            padding: 14px;
+            font: inherit;
+            outline: none;
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+            input:focus, select:focus, textarea:focus {
+                border-color: rgba(124,201,255,.45);
+                box-shadow: 0 0 0 4px rgba(124,201,255,.10);
+            }
+
+        textarea {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .hint {
+            margin-top: 4px;
+            font-size: .88rem;
+            color: var(--muted);
+        }
+
+        .cluster {
+            padding: 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(255,255,255,.08);
+            background: rgba(255,255,255,.03);
+        }
+
+            .cluster + .cluster {
+                margin-top: 16px;
+            }
+
+            .cluster h4 {
+                margin-bottom: 12px;
+                font-size: 1rem;
+            }
+
+        .checks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .check {
+            position: relative;
+        }
+
+            .check input {
+                position: absolute;
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            .check span {
+                display: inline-flex;
+                align-items: center;
+                min-height: 42px;
+                padding: 0 14px;
+                border-radius: 999px;
+                border: 1px solid rgba(255,255,255,.10);
+                background: rgba(255,255,255,.04);
+                color: var(--muted);
+                cursor: pointer;
+                transition: all .18s ease;
+                user-select: none;
+                font-size: .92rem;
+            }
+
+            .check input:checked + span {
+                color: #06131f;
+                background: linear-gradient(135deg, var(--brand), var(--brand-2));
+                border-color: transparent;
+                box-shadow: 0 8px 24px rgba(124,201,255,.18);
+            }
+
+        .selected-skills {
+            margin-top: 16px;
+            display: none;
+            gap: 12px;
+        }
+
+            .selected-skills.show {
+                display: grid;
+            }
+
+        .skill-level-row {
+            display: grid;
+            grid-template-columns: 1fr 170px 140px;
+            gap: 12px;
+            align-items: center;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.08);
+        }
+
+        .skill-tag {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .helper-box {
+            margin-top: 18px;
+            padding: 16px 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,.08);
+            background: linear-gradient(135deg, rgba(124,201,255,.08), rgba(142,240,207,.05));
+        }
+
+            .helper-box strong {
+                display: block;
+                margin-bottom: 8px;
+            }
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .form-note {
+            max-width: 660px;
+            color: var(--muted);
+            font-size: .95rem;
+        }
+
+        .result {
+            margin-top: 24px;
+            display: none;
+            padding: 24px;
+            border-radius: 22px;
+            border: 1px solid rgba(124,201,255,.22);
+            background: linear-gradient(135deg, rgba(124,201,255,.10), rgba(142,240,207,.08));
+        }
+
+            .result.show {
+                display: block;
+            }
+
+        .result-grid {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .result-card {
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,.18);
+            border: 1px solid rgba(255,255,255,.24);
+            color: #082031;
+        }
+
+            .result-card strong {
+                display: block;
+                margin-bottom: 6px;
+            }
+
+        .status-row {
+            margin-top: 18px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 36px;
+            padding: 0 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,.18);
+            background: rgba(255,255,255,.18);
+            color: #082031;
+            font-weight: 700;
+            font-size: .9rem;
+        }
+
+        .status-text {
+            color: #082031;
+            font-weight: 600;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity .55s ease, transform .55s ease;
+        }
+
+            .reveal.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        .footer {
+            padding: 34px 0 56px;
+            color: var(--muted);
+            border-top: 1px solid rgba(255,255,255,.06);
+        }
+
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        @media (max-width: 1100px) {
+            .hero-grid,
+            .join-wrap,
+            .grid-3,
+            .grid-2,
+            .form-grid,
+            .result-grid,
+            .skill-level-row {
+                grid-template-columns: 1fr;
+            }
+
+            .side-panel {
+                position: static;
+            }
+        }
+
+        @media (max-width: 760px) {
+            .section {
+                padding: 64px 0;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .card, .form-card {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <div class="container nav">
+            <a class="brand" href="#top">
+                <div class="brand-mark">DLC</div>
+                <div>
+                    Deep Lead Consulting
+                    <small>Candidate Network</small>
+                </div>
+            </a>
+
+            <nav class="nav-links">
+                <a href="#opportunities">Opportunities</a>
+                <a href="#fit">What matters</a>
+                <a href="#join">Join</a>
+            </nav>
+
+            <a class="btn btn-secondary" href="#join">Share Your Profile</a>
+        </div>
+    </header>
+
+    <main id="top">
+        <section class="hero section">
+            <div class="container hero-grid">
+                <div class="hero-copy reveal">
+                    <div class="eyebrow">Candidate intake</div>
+                    <h1>Tell us where you create the most value.</h1>
+                    <p class="lead">
+                        We work with technical professionals who care about depth, clarity, ownership, and long-term impact. If you are a backend engineer, consultant, architect, or technical lead looking for the right environment—not just the next role—this page is for you.
+                    </p>
+                    <p>
+                        Share your strengths, your availability, the kind of mission you want next, and the technologies where you are strongest. We use that information to understand your profile properly and guide you toward the most relevant next step.
+                    </p>
+
+                    <div class="hero-actions">
+                        <a class="btn btn-primary" href="#join">Build Your Profile</a>
+                        <a class="btn btn-secondary" href="#opportunities">See What We Value</a>
+                    </div>
+
+                    <div class="pill-row">
+                        <span class="pill">Backend & API Depth</span>
+                        <span class="pill">Architecture Thinking</span>
+                        <span class="pill">Delivery & Reliability</span>
+                        <span class="pill">Clear Candidate Routing</span>
+                    </div>
+                </div>
+
+                <div class="glass hero-panel reveal">
+                    <div class="mini-card">
+                        <strong>Who this is for</strong>
+                        <div class="muted">
+                            Developers, consultants, architects, leads, and technical profiles who want to be considered with more nuance than a CV alone.
+                        </div>
+                    </div>
+                    <div class="mini-card">
+                        <strong>What to expect</strong>
+                        <div class="muted">
+                            A structured profile review, a clearer understanding of your strongest track, and later an assessment path adapted to your level and direction.
+                        </div>
+                    </div>
+                    <div class="mini-card">
+                        <strong>What helps most</strong>
+                        <div class="muted">
+                            Specificity. The more clearly you describe what you truly do well, the easier it is to route you toward the right opportunity.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="opportunities" class="section">
+            <div class="container">
+                <div class="reveal">
+                    <div class="eyebrow">What we look for</div>
+                    <h2>Depth matters. Clarity matters. Fit matters.</h2>
+                    <p class="lead">
+                        We are not only looking for keywords. We are looking for people who understand systems, contribute with maturity, and know where they perform best.
+                    </p>
+                </div>
+
+                <div class="grid-3" style="margin-top:30px;">
+                    <div class="card reveal">
+                        <div class="card-icon">◎</div>
+                        <h3>Technical depth</h3>
+                        <p class="muted">
+                            Strong profiles usually know more than tools. They understand trade-offs, constraints, reliability, and how to create value through sound engineering choices.
+                        </p>
+                    </div>
+
+                    <div class="card reveal">
+                        <div class="card-icon">↗</div>
+                        <h3>Useful ownership</h3>
+                        <p class="muted">
+                            We value candidates who can move work forward, take responsibility seriously, and adapt to real-world delivery contexts without losing quality.
+                        </p>
+                    </div>
+
+                    <div class="card reveal">
+                        <div class="card-icon">◌</div>
+                        <h3>Environment fit</h3>
+                        <p class="muted">
+                            The right opportunity depends on more than technical stack. It also depends on team culture, mission type, seniority, pace, and collaboration style.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="fit" class="section">
+            <div class="container grid-2">
+                <div class="card reveal">
+                    <div class="eyebrow">Helpful advice</div>
+                    <h2 style="font-size:clamp(1.8rem, 3.5vw, 2.5rem);">What makes a strong profile here.</h2>
+                    <ul class="list">
+                        <li>Describe what you actually deliver well, not only what appears on your CV.</li>
+                        <li>Be honest about your strongest skills and your real level of confidence.</li>
+                        <li>Tell us what kind of mission, pace, or context suits you best.</li>
+                        <li>Make your availability and preferred role easy to understand.</li>
+                        <li>Show depth in a few important areas rather than claiming everything.</li>
+                        <li>Use the summary field to give us a meaningful picture of how you work.</li>
+                    </ul>
+                </div>
+
+                <div class="card reveal">
+                    <div class="eyebrow">What happens next</div>
+                    <h2 style="font-size:clamp(1.8rem, 3.5vw, 2.5rem);">A clearer next step, not a black box.</h2>
+                    <ul class="list">
+                        <li>Your profile is reviewed in a structured way.</li>
+                        <li>Your strongest technical cluster is identified.</li>
+                        <li>Your role direction and seniority influence the next route.</li>
+                        <li>You may later be invited to a more focused assessment path.</li>
+                        <li>The assessment track can differ for backend, architecture, consulting, or leadership-oriented profiles.</li>
+                        <li>As the platform evolves, stronger matches with client demand can also influence routing.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="container" style="margin-top:26px;">
+                <div class="quote reveal">
+                    “A strong candidate profile is not a list of buzzwords. It is a clear signal of where you can contribute best, how you operate, and what kind of challenge deserves your energy next.”
+                </div>
+            </div>
+        </section>
+
+        <section id="join" class="section">
+            <div class="container join-wrap">
+                <div class="side-panel reveal">
+                    <div class="eyebrow">Join the network</div>
+                    <h2>Build a profile that reflects what you actually do well.</h2>
+                    <p class="lead" style="max-width:100%;">
+                        This form is designed to help us understand both your technical strengths and your direction. The better your profile reflects your real value, the better we can route you.
+                    </p>
+
+                    <div class="stack">
+                        <div class="mini-card">
+                            <strong>Good candidate summaries usually mention</strong>
+                            <div class="muted">
+                                your strongest technical depth, the contexts where you perform best, what you like to own, and the kind of mission you are ready for next.
+                            </div>
+                        </div>
+
+                        <div class="mini-card">
+                            <strong>Typical role directions</strong>
+                            <div class="muted">
+                                Backend Developer, Senior .NET Developer, Software Architect, Consultant, Technical Lead, or hybrid profiles that combine delivery and technical guidance.
+                            </div>
+                        </div>
+
+                        <div class="mini-card">
+                            <strong>Assessment comes later</strong>
+                            <div class="muted">
+                                The next page can eventually adapt to your level and track. For now, start by giving us a profile that is honest, sharp, and useful.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-card reveal">
+                    <form id="candidateForm">
+                        <div class="form-grid">
+                            <div class="field">
+                                <label for="fullName">Full name</label>
+                                <input id="fullName" name="fullName" type="text" placeholder="Your full name" required />
+                            </div>
+
+                            <div class="field">
+                                <label for="email">Email</label>
+                                <input id="email" name="email" type="email" placeholder="you@example.com" required />
+                            </div>
+
+                            <div class="field">
+                                <label for="phone">Phone <span class="muted">(optional)</span></label>
+                                <input id="phone" name="phone" type="text" placeholder="Phone number" />
+                            </div>
+
+                            <div class="field">
+                                <label for="location">Location</label>
+                                <input id="location" name="location" type="text" placeholder="City / Country" required />
+                            </div>
+
+                            <div class="field">
+                                <label for="targetRole">Target role</label>
+                                <select id="targetRole" name="targetRole" required>
+                                    <option value="">Select a role</option>
+                                    <option value="Backend Developer">Backend Developer</option>
+                                    <option value="Senior .NET Developer">Senior .NET Developer</option>
+                                    <option value="Software Architect">Software Architect</option>
+                                    <option value="Technical Lead">Technical Lead</option>
+                                    <option value="Consultant">Consultant</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="field">
+                                <label for="experienceLevel">Experience level</label>
+                                <select id="experienceLevel" name="experienceLevel" required>
+                                    <option value="">Select your level</option>
+                                    <option value="0-2 years">0–2 years</option>
+                                    <option value="3-5 years">3–5 years</option>
+                                    <option value="6-9 years">6–9 years</option>
+                                    <option value="10+ years">10+ years</option>
+                                </select>
+                            </div>
+
+                            <div class="field">
+                                <label for="availability">Availability</label>
+                                <select id="availability" name="availability" required>
+                                    <option value="">Select availability</option>
+                                    <option value="Immediate">Immediate</option>
+                                    <option value="Within 2 weeks">Within 2 weeks</option>
+                                    <option value="Within 1 month">Within 1 month</option>
+                                    <option value="More than 1 month">More than 1 month</option>
+                                </select>
+                            </div>
+
+                            <div class="field">
+                                <label for="workMode">Preferred work mode</label>
+                                <select id="workMode" name="workMode" required>
+                                    <option value="">Select mode</option>
+                                    <option value="Remote">Remote</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                    <option value="Onsite">Onsite</option>
+                                    <option value="Flexible">Flexible</option>
+                                </select>
+                            </div>
+
+                            <div class="field">
+                                <label for="linkedin">LinkedIn or portfolio <span class="muted">(optional)</span></label>
+                                <input id="linkedin" name="linkedin" type="text" placeholder="Profile URL" />
+                            </div>
+
+                            <div class="field">
+                                <label for="github">GitHub <span class="muted">(optional)</span></label>
+                                <input id="github" name="github" type="text" placeholder="GitHub URL" />
+                            </div>
+
+                            <div class="field-full">
+                                <label>Select your strongest skills</label>
+                                <div class="hint">
+                                    Choose the technologies and practices you would actually want us to consider when thinking about your fit.
+                                </div>
+
+                                <div class="cluster">
+                                    <h4>Backend &amp; API Development</h4>
+                                    <div class="checks">
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="C#" data-cluster="backend"><span>C#</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value=".NET" data-cluster="backend"><span>.NET</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="ASP.NET Core" data-cluster="backend"><span>ASP.NET Core</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="REST APIs" data-cluster="backend"><span>REST APIs</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Swagger / OpenAPI" data-cluster="backend"><span>Swagger / OpenAPI</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="LINQ" data-cluster="backend"><span>LINQ</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="EF Core" data-cluster="backend"><span>EF Core</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="SQL Server" data-cluster="backend"><span>SQL Server</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="API Integration" data-cluster="backend"><span>API Integration</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Error Handling" data-cluster="backend"><span>Error Handling</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="API Contract Design" data-cluster="backend"><span>API Contract Design</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Simulation &amp; Forecasting" data-cluster="backend"><span>Simulation &amp; Forecasting</span></label>
+                                    </div>
+                                </div>
+
+                                <div class="cluster">
+                                    <h4>Architecture &amp; Engineering Practices</h4>
+                                    <div class="checks">
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Layered Architecture" data-cluster="architecture"><span>Layered Architecture</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Clean Architecture" data-cluster="architecture"><span>Clean Architecture</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="DDD Concepts" data-cluster="architecture"><span>DDD Concepts</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Domain Modeling" data-cluster="architecture"><span>Domain Modeling</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="System Design" data-cluster="architecture"><span>System Design</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Refactoring" data-cluster="architecture"><span>Refactoring</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Testability" data-cluster="architecture"><span>Testability</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Separation of Concerns" data-cluster="architecture"><span>Separation of Concerns</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Code Review" data-cluster="architecture"><span>Code Review</span></label>
+                                    </div>
+                                </div>
+
+                                <div class="cluster">
+                                    <h4>Cloud, DevOps &amp; Delivery</h4>
+                                    <div class="checks">
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Azure" data-cluster="cloud"><span>Azure</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Azure DevOps" data-cluster="cloud"><span>Azure DevOps</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Git" data-cluster="cloud"><span>Git</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="CI/CD" data-cluster="cloud"><span>CI/CD</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Agile" data-cluster="cloud"><span>Agile</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Scrum" data-cluster="cloud"><span>Scrum</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Incident Resolution" data-cluster="cloud"><span>Incident Resolution</span></label>
+                                    </div>
+                                </div>
+
+                                <div class="cluster">
+                                    <h4>Frontend &amp; UI Collaboration</h4>
+                                    <div class="checks">
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Razor" data-cluster="frontend"><span>Razor</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="ASP.NET MVC" data-cluster="frontend"><span>ASP.NET MVC</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="HTML" data-cluster="frontend"><span>HTML</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="CSS" data-cluster="frontend"><span>CSS</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="JavaScript" data-cluster="frontend"><span>JavaScript</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Bootstrap" data-cluster="frontend"><span>Bootstrap</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="jQuery" data-cluster="frontend"><span>jQuery</span></label>
+                                    </div>
+                                </div>
+
+                                <div class="cluster">
+                                    <h4>Functional &amp; Product Skills</h4>
+                                    <div class="checks">
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Requirements Analysis" data-cluster="functional"><span>Requirements Analysis</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Root Cause Analysis" data-cluster="functional"><span>Root Cause Analysis</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Stakeholder Communication" data-cluster="functional"><span>Stakeholder Communication</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Business-Technical Translation" data-cluster="functional"><span>Business-Technical Translation</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Product-Oriented Development" data-cluster="functional"><span>Product-Oriented Development</span></label>
+                                        <label class="check"><input type="checkbox" class="skill-toggle" value="Decision-Support Systems" data-cluster="functional"><span>Decision-Support Systems</span></label>
+                                    </div>
+                                </div>
+
+                                <div id="selectedSkillsPanel" class="selected-skills"></div>
+                            </div>
+
+                            <div class="field-full">
+                                <label for="candidateStory">Tell us about your profile</label>
+                                <textarea id="candidateStory"
+                                          name="candidateStory"
+                                          placeholder="Describe your strongest technical areas, the environments where you perform best, and the type of mission or team you want next."></textarea>
+
+                                <div id="dynamicHelp" class="helper-box">
+                                    <strong>Profile guidance</strong>
+                                    <div class="muted">
+                                        Choose your target role and use this field to explain where you are strongest, what you like to own, and what kind of challenge fits your direction now.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <div class="form-note">
+                                This page is intentionally focused on your profile first. Later, your submission can route you toward a more relevant assessment path based on your direction, your seniority, and the strengths you declare here.
+                            </div>
+                            <button type="submit" class="btn btn-primary">Continue With My Profile</button>
+                        </div>
+                    </form>
+
+                    <div id="candidateResult" class="result" aria-live="polite">
+                        <h3 style="margin-bottom:8px;">Your profile is ready for the next step.</h3>
+                        <div id="candidateSummary" class="muted">
+                            A structured summary will appear here.
+                        </div>
+
+                        <div class="result-grid">
+                            <div class="result-card">
+                                <strong>Primary direction</strong>
+                                <span id="resultRole">—</span>
+                            </div>
+                            <div class="result-card">
+                                <strong>Strongest cluster</strong>
+                                <span id="resultCluster">—</span>
+                            </div>
+                            <div class="result-card">
+                                <strong>Likely next step</strong>
+                                <span id="resultNext">—</span>
+                            </div>
+                        </div>
+
+                        <div class="status-row">
+                            <div id="statusPill" class="status-pill">Profile captured</div>
+                            <div id="statusText" class="status-text">
+                                The next phase can later route you to an assessment adapted to your role and level.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-row">
+            <div>
+                <strong style="color:var(--text);">D.L.C — Candidate Network</strong><br />
+                Technical Depth. Human Leadership. Long-Term Impact.
+            </div>
+            <div>© <span id="year"></span> Deep Lead Consulting</div>
+        </div>
+    </footer>
+
+    <script>
+    (function () {
+      const year = document.getElementById("year");
+      if (year) year.textContent = new Date().getFullYear();
+
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            e.preventDefault();
+            window.scrollTo({
+              top: target.offsetTop - 74,
+              behavior: "smooth"
+            });
+          }
+        });
+      });
+
+      function revealOnScroll() {
+        document.querySelectorAll(".reveal").forEach(el => {
+          const top = el.getBoundingClientRect().top;
+          if (top < window.innerHeight - 70) {
+            el.classList.add("is-visible");
+          }
+        });
+      }
+
+      revealOnScroll();
+      window.addEventListener("scroll", revealOnScroll);
+      window.addEventListener("resize", revealOnScroll);
+
+      const clusterLabels = {
+        backend: "Backend & API Development",
+        architecture: "Architecture & Engineering Practices",
+        cloud: "Cloud, DevOps & Delivery",
+        frontend: "Frontend & UI Collaboration",
+        functional: "Functional & Product Skills"
+      };
+
+      const rolePrompts = {
+        "Backend Developer": {
+          placeholder: "Describe your strongest backend stack, the kinds of APIs or systems you build, and the delivery context where you are most effective.",
+          helper: "Focus on your strongest backend depth, the systems you build confidently, and the kind of engineering environment where you contribute quickly."
+        },
+        "Senior .NET Developer": {
+          placeholder: "Describe your .NET depth, ownership level, architectural exposure, and the type of senior mission you want next.",
+          helper: "Mention where you bring senior value: delivery ownership, refactoring, architecture collaboration, mentoring, performance, or modernization."
+        },
+        "Software Architect": {
+          placeholder: "Describe the systems you design, your architecture principles, how you think about trade-offs, and the kind of organization where you create the most value.",
+          helper: "Talk about systems thinking, design responsibility, technical direction, and how you work with both engineers and decision-makers."
+        },
+        "Technical Lead": {
+          placeholder: "Describe your leadership style, technical decision-making, mentoring exposure, and the type of team or mission where you lead best.",
+          helper: "Highlight how you combine delivery, communication, technical standards, and team guidance."
+        },
+        "Consultant": {
+          placeholder: "Describe the kinds of technical problems you solve best, how you operate in complex environments, and the kind of consulting mission that fits you now.",
+          helper: "Be clear about diagnosis, adaptability, communication, and the situations where your experience becomes especially useful."
+        },
+        "Other": {
+          placeholder: "Describe your strongest areas, the type of role you want next, and what kind of environment fits you best.",
+          helper: "Use this space to explain your direction clearly so your profile can still be routed well."
+        }
+      };
+
+      function updateRoleGuidance() {
+        const role = document.getElementById("targetRole").value;
+        const story = document.getElementById("candidateStory");
+        const help = document.getElementById("dynamicHelp");
+        const config = rolePrompts[role];
+
+        if (!config) {
+          story.placeholder = "Describe your strongest technical areas, the environments where you perform best, and the type of mission or team you want next.";
+          help.innerHTML = '<strong>Profile guidance</strong><div class="muted">Choose your target role and use this field to explain where you are strongest, what you like to own, and what kind of challenge fits your direction now.</div>';
+          return;
+        }
+
+        story.placeholder = config.placeholder;
+        help.innerHTML = '<strong>Guidance for ' + role + '</strong><div class="muted">' + config.helper + '</div>';
+      }
+
+      document.getElementById("targetRole").addEventListener("change", updateRoleGuidance);
+
+      function renderSelectedSkills() {
+        const panel = document.getElementById("selectedSkillsPanel");
+        const selected = document.querySelectorAll(".skill-toggle:checked");
+        panel.innerHTML = "";
+
+        if (!selected.length) {
+          panel.classList.remove("show");
+          return;
+        }
+
+        selected.forEach((checkbox, index) => {
+          const skill = checkbox.value;
+          const cluster = checkbox.dataset.cluster;
+
+          const row = document.createElement("div");
+          row.className = "skill-level-row";
+          row.innerHTML = `
+            <div>
+              <div class="skill-tag">${skill}</div>
+              <div class="muted" style="font-size:.88rem;">${clusterLabels[cluster]}</div>
+            </div>
+            <select class="skill-level" data-skill="${skill}">
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate" ${index === 0 ? "" : "selected"}>Intermediate</option>
+              <option value="Advanced" ${index === 0 ? "selected" : ""}>Advanced</option>
+              <option value="Expert">Expert</option>
+            </select>
+            <input class="skill-years" data-skill="${skill}" type="number" min="0" max="40" step="1" placeholder="Years" />
+          `;
+          panel.appendChild(row);
+        });
+
+        panel.classList.add("show");
+      }
+
+      document.querySelectorAll(".skill-toggle").forEach(input => {
+        input.addEventListener("change", renderSelectedSkills);
+      });
+
+      function computeDominantCluster(skills) {
+        const counters = {
+          backend: 0,
+          architecture: 0,
+          cloud: 0,
+          frontend: 0,
+          functional: 0
+        };
+
+        skills.forEach(item => {
+          counters[item.cluster] += 1;
+        });
+
+        let dominant = "backend";
+        let max = 0;
+
+        Object.keys(counters).forEach(key => {
+          if (counters[key] > max) {
+            max = counters[key];
+            dominant = key;
+          }
+        });
+
+        return {
+          key: dominant,
+          label: clusterLabels[dominant]
+        };
+      }
+
+      function deriveNextStep(targetRole, experienceLevel, dominantClusterKey) {
+        if (targetRole === "Software Architect") return "Architecture-focused assessment path";
+        if (targetRole === "Technical Lead") return "Leadership and architecture track";
+        if (targetRole === "Consultant") return "Consulting and systems diagnosis track";
+        if (experienceLevel === "10+ years" || experienceLevel === "6-9 years") return "Senior-level technical assessment";
+        if (dominantClusterKey === "architecture") return "Architecture-oriented screening";
+        return "Core technical assessment";
+      }
+
+      document.getElementById("candidateForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const selected = document.querySelectorAll(".skill-toggle:checked");
+        if (!selected.length) {
+          alert("Please select at least one skill.");
+          return;
+        }
+
+        const fullName = document.getElementById("fullName").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const location = document.getElementById("location").value.trim();
+        const targetRole = document.getElementById("targetRole").value;
+        const experienceLevel = document.getElementById("experienceLevel").value;
+        const availability = document.getElementById("availability").value;
+        const workMode = document.getElementById("workMode").value;
+        const candidateStory = document.getElementById("candidateStory").value.trim();
+
+        if (!fullName) return alert("Please enter your full name.");
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert("Please enter a valid email.");
+        if (!location) return alert("Please enter your location.");
+        if (!targetRole) return alert("Please select your target role.");
+        if (!experienceLevel) return alert("Please select your experience level.");
+        if (!availability) return alert("Please select your availability.");
+        if (!workMode) return alert("Please select your preferred work mode.");
+
+        const skills = Array.from(selected).map((checkbox, index) => {
+          const skill = checkbox.value;
+          const levelSelect = document.querySelector('.skill-level[data-skill="' + CSS.escape(skill) + '"]');
+          const yearsInput = document.querySelector('.skill-years[data-skill="' + CSS.escape(skill) + '"]');
+
+          return {
+            name: skill,
+            cluster: checkbox.dataset.cluster,
+            level: levelSelect ? levelSelect.value : "Intermediate",
+            years: yearsInput && yearsInput.value ? Number(yearsInput.value) : null,
+            isPrimary: index === 0
+          };
+        });
+
+        const dominant = computeDominantCluster(skills);
+        const nextStep = deriveNextStep(targetRole, experienceLevel, dominant.key);
+
+        const summary = `${fullName} is targeting ${targetRole} with ${experienceLevel} of experience, prefers ${workMode.toLowerCase()} work, and is available ${availability.toLowerCase()}.`;
+
+        document.getElementById("candidateSummary").textContent =
+          candidateStory
+            ? summary + " Profile summary captured and ready for the next routing step."
+            : summary + " A fuller profile summary would make next-step routing even stronger.";
+
+        document.getElementById("resultRole").textContent = targetRole;
+        document.getElementById("resultCluster").textContent = dominant.label;
+        document.getElementById("resultNext").textContent = nextStep;
+        document.getElementById("statusPill").textContent = "Profile ready";
+        document.getElementById("statusText").textContent =
+          "The worker can later use this profile to decide assessment routing and stronger matching logic.";
+        document.getElementById("candidateResult").classList.add("show");
+
+        window.scrollTo({
+          top: document.getElementById("candidateResult").offsetTop - 110,
+          behavior: "smooth"
+        });
+
+        // Future backend hook:
+        // const payload = { ... };
+        // fetch("/api/candidate-intake", { method: "POST", ... })
+        //   .then(...)
+        //   .then(data => redirect to assessment based on worker response)
+      });
+    })();
+    </script>
+</body>
+</html>
