@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/Frontend/CopilotIndices/18.5.39108.44903
+.vs/
+*.user
+*.suo
