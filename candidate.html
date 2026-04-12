@@ -985,7 +985,18 @@
                             <div class="form-note">
                                 This page is intentionally focused on your profile first. Later, your submission can route you toward a more relevant assessment path based on your direction, your seniority, and the strengths you declare here.
                             </div>
-                            <button type="submit" class="btn btn-primary">Continue With My Profile</button>
+
+                            <div style="display:grid; gap:8px;">
+                                <div class="cf-turnstile"
+                                     data-sitekey="0x4AAAAAAC13jXud4D3a9xye"
+                                     data-action="candidate-intake"
+                                     data-callback="onTurnstileSuccess"
+                                     data-error-callback="onTurnstileError"
+                                     data-expired-callback="onTurnstileExpired">
+                                </div>
+                                <div id="turnstileError" class="muted" style="display:none; color:#ffb4b4;"></div>
+                                <button id="submitButton" type="submit" class="btn btn-primary">Continue With My Profile</button>
+                            </div>
                         </div>
                     </form>
 
@@ -1032,237 +1043,394 @@
         </div>
     </footer>
 
+
     <script>
-    (function () {
-      const year = document.getElementById("year");
-      if (year) year.textContent = new Date().getFullYear();
+        let turnstileToken = null;
+        let hasSubmitted = false;
 
-      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener("click", function (e) {
-          const target = document.querySelector(this.getAttribute("href"));
-          if (target) {
-            e.preventDefault();
-            window.scrollTo({
-              top: target.offsetTop - 74,
-              behavior: "smooth"
+        function onTurnstileSuccess(token) {
+            turnstileToken = token;
+            const el = document.getElementById("turnstileError");
+            if (el) el.style.display = "none";
+        }
+        function onTurnstileError() {
+            turnstileToken = null;
+        }
+        function onTurnstileExpired() {
+            turnstileToken = null;
+        }
+        function resetTurnstileWidget() {
+            turnstileToken = null;
+            if (window.turnstile && typeof window.turnstile.reset === "function") {
+                try { window.turnstile.reset(); } catch (_) { }
+            }
+        }
+
+        (function () {
+            const CANDIDATE_CONFIG = {
+                API_URL: "https://dlc-client-intake-worker.deepleadconsulting.workers.dev/api/client-intake",
+                REQUEST_TIMEOUT_MS: 15000,
+                SCHEMA_VERSION: "1.0.0",
+                SOURCE_PAGE: "candidate-intake-page",
+                PAGE_VERSION: "2026.04.12"
+            };
+
+            const year = document.getElementById("year");
+            if (year) year.textContent = new Date().getFullYear();
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener("click", function (e) {
+                    const target = document.querySelector(this.getAttribute("href"));
+                    if (target) {
+                        e.preventDefault();
+                        window.scrollTo({ top: target.offsetTop - 74, behavior: "smooth" });
+                    }
+                });
             });
-          }
-        });
-      });
 
-      function revealOnScroll() {
-        document.querySelectorAll(".reveal").forEach(el => {
-          const top = el.getBoundingClientRect().top;
-          if (top < window.innerHeight - 70) {
-            el.classList.add("is-visible");
-          }
-        });
-      }
+            function revealOnScroll() {
+                document.querySelectorAll(".reveal").forEach(el => {
+                    const top = el.getBoundingClientRect().top;
+                    if (top < window.innerHeight - 70) el.classList.add("is-visible");
+                });
+            }
+            revealOnScroll();
+            window.addEventListener("scroll", revealOnScroll);
+            window.addEventListener("resize", revealOnScroll);
 
-      revealOnScroll();
-      window.addEventListener("scroll", revealOnScroll);
-      window.addEventListener("resize", revealOnScroll);
+            const clusterLabels = {
+                backend: "Backend & API Development",
+                architecture: "Architecture & Engineering Practices",
+                cloud: "Cloud, DevOps & Delivery",
+                frontend: "Frontend & UI Collaboration",
+                functional: "Functional & Product Skills"
+            };
 
-      const clusterLabels = {
-        backend: "Backend & API Development",
-        architecture: "Architecture & Engineering Practices",
-        cloud: "Cloud, DevOps & Delivery",
-        frontend: "Frontend & UI Collaboration",
-        functional: "Functional & Product Skills"
-      };
+            const rolePrompts = {
+                "Backend Developer": {
+                    placeholder: "Describe your strongest backend stack, the kinds of APIs or systems you build, and the delivery context where you are most effective.",
+                    helper: "Focus on your strongest backend depth, the systems you build confidently, and the engineering environment where you contribute quickly."
+                },
+                "Senior .NET Developer": {
+                    placeholder: "Describe your .NET depth, ownership level, architectural exposure, and the type of senior mission you want next.",
+                    helper: "Mention where you bring senior value: ownership, refactoring, architecture collaboration, mentoring, performance."
+                },
+                "Software Architect": {
+                    placeholder: "Describe the systems you design, your architecture principles, and your trade-off approach.",
+                    helper: "Talk about systems thinking, design responsibility, and cross-team technical leadership."
+                },
+                "Technical Lead": {
+                    placeholder: "Describe your leadership style, technical decision-making, and mentoring exposure.",
+                    helper: "Highlight how you combine delivery, communication, standards, and team guidance."
+                },
+                "Consultant": {
+                    placeholder: "Describe the technical problems you solve best and the consulting contexts where you create value.",
+                    helper: "Be clear about diagnosis, adaptability, communication, and impact."
+                },
+                "Other": {
+                    placeholder: "Describe your strongest areas, your role direction, and your best-fit environment.",
+                    helper: "Use this field to make your direction explicit."
+                }
+            };
 
-      const rolePrompts = {
-        "Backend Developer": {
-          placeholder: "Describe your strongest backend stack, the kinds of APIs or systems you build, and the delivery context where you are most effective.",
-          helper: "Focus on your strongest backend depth, the systems you build confidently, and the kind of engineering environment where you contribute quickly."
-        },
-        "Senior .NET Developer": {
-          placeholder: "Describe your .NET depth, ownership level, architectural exposure, and the type of senior mission you want next.",
-          helper: "Mention where you bring senior value: delivery ownership, refactoring, architecture collaboration, mentoring, performance, or modernization."
-        },
-        "Software Architect": {
-          placeholder: "Describe the systems you design, your architecture principles, how you think about trade-offs, and the kind of organization where you create the most value.",
-          helper: "Talk about systems thinking, design responsibility, technical direction, and how you work with both engineers and decision-makers."
-        },
-        "Technical Lead": {
-          placeholder: "Describe your leadership style, technical decision-making, mentoring exposure, and the type of team or mission where you lead best.",
-          helper: "Highlight how you combine delivery, communication, technical standards, and team guidance."
-        },
-        "Consultant": {
-          placeholder: "Describe the kinds of technical problems you solve best, how you operate in complex environments, and the kind of consulting mission that fits you now.",
-          helper: "Be clear about diagnosis, adaptability, communication, and the situations where your experience becomes especially useful."
-        },
-        "Other": {
-          placeholder: "Describe your strongest areas, the type of role you want next, and what kind of environment fits you best.",
-          helper: "Use this space to explain your direction clearly so your profile can still be routed well."
-        }
-      };
+            function updateRoleGuidance() {
+                const role = document.getElementById("targetRole").value;
+                const story = document.getElementById("candidateStory");
+                const help = document.getElementById("dynamicHelp");
+                const config = rolePrompts[role];
 
-      function updateRoleGuidance() {
-        const role = document.getElementById("targetRole").value;
-        const story = document.getElementById("candidateStory");
-        const help = document.getElementById("dynamicHelp");
-        const config = rolePrompts[role];
+                if (!config) {
+                    story.placeholder = "Describe your strongest technical areas, the environments where you perform best, and the type of mission or team you want next.";
+                    help.innerHTML = '<strong>Profile guidance</strong><div class="muted">Choose your target role and explain where you are strongest and what kind of challenge fits your direction.</div>';
+                    return;
+                }
 
-        if (!config) {
-          story.placeholder = "Describe your strongest technical areas, the environments where you perform best, and the type of mission or team you want next.";
-          help.innerHTML = '<strong>Profile guidance</strong><div class="muted">Choose your target role and use this field to explain where you are strongest, what you like to own, and what kind of challenge fits your direction now.</div>';
-          return;
-        }
+                story.placeholder = config.placeholder;
+                help.innerHTML = '<strong>Guidance for ' + role + '</strong><div class="muted">' + config.helper + '</div>';
+            }
 
-        story.placeholder = config.placeholder;
-        help.innerHTML = '<strong>Guidance for ' + role + '</strong><div class="muted">' + config.helper + '</div>';
-      }
+            document.getElementById("targetRole").addEventListener("change", updateRoleGuidance);
 
-      document.getElementById("targetRole").addEventListener("change", updateRoleGuidance);
+            function renderSelectedSkills() {
+                const panel = document.getElementById("selectedSkillsPanel");
+                const selected = document.querySelectorAll(".skill-toggle:checked");
+                panel.innerHTML = "";
 
-      function renderSelectedSkills() {
-        const panel = document.getElementById("selectedSkillsPanel");
-        const selected = document.querySelectorAll(".skill-toggle:checked");
-        panel.innerHTML = "";
+                if (!selected.length) {
+                    panel.classList.remove("show");
+                    return;
+                }
 
-        if (!selected.length) {
-          panel.classList.remove("show");
-          return;
-        }
+                selected.forEach((checkbox, index) => {
+                    const skill = checkbox.value;
+                    const cluster = checkbox.dataset.cluster;
 
-        selected.forEach((checkbox, index) => {
-          const skill = checkbox.value;
-          const cluster = checkbox.dataset.cluster;
+                    const row = document.createElement("div");
+                    row.className = "skill-level-row";
+                    row.innerHTML = `
+                <div>
+                    <div class="skill-tag">${skill}</div>
+                    <div class="muted" style="font-size:.88rem;">${clusterLabels[cluster]}</div>
+                </div>
+                <select class="skill-level" data-skill="${skill}">
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate" ${index === 0 ? "" : "selected"}>Intermediate</option>
+                    <option value="Advanced" ${index === 0 ? "selected" : ""}>Advanced</option>
+                    <option value="Expert">Expert</option>
+                </select>
+                <input class="skill-years" data-skill="${skill}" type="number" min="0" max="40" step="1" placeholder="Years" />
+                `;
+                    panel.appendChild(row);
+                });
 
-          const row = document.createElement("div");
-          row.className = "skill-level-row";
-          row.innerHTML = `
-            <div>
-              <div class="skill-tag">${skill}</div>
-              <div class="muted" style="font-size:.88rem;">${clusterLabels[cluster]}</div>
-            </div>
-            <select class="skill-level" data-skill="${skill}">
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate" ${index === 0 ? "" : "selected"}>Intermediate</option>
-              <option value="Advanced" ${index === 0 ? "selected" : ""}>Advanced</option>
-              <option value="Expert">Expert</option>
-            </select>
-            <input class="skill-years" data-skill="${skill}" type="number" min="0" max="40" step="1" placeholder="Years" />
-          `;
-          panel.appendChild(row);
-        });
+                panel.classList.add("show");
+            }
 
-        panel.classList.add("show");
-      }
+            document.querySelectorAll(".skill-toggle").forEach(input => {
+                input.addEventListener("change", renderSelectedSkills);
+            });
 
-      document.querySelectorAll(".skill-toggle").forEach(input => {
-        input.addEventListener("change", renderSelectedSkills);
-      });
+            function computeDominantCluster(skills) {
+                const counters = { backend: 0, architecture: 0, cloud: 0, frontend: 0, functional: 0 };
+                skills.forEach(item => { counters[item.cluster] += 1; });
 
-      function computeDominantCluster(skills) {
-        const counters = {
-          backend: 0,
-          architecture: 0,
-          cloud: 0,
-          frontend: 0,
-          functional: 0
-        };
+                let dominant = "backend";
+                let max = 0;
+                Object.keys(counters).forEach(key => {
+                    if (counters[key] > max) { max = counters[key]; dominant = key; }
+                });
 
-        skills.forEach(item => {
-          counters[item.cluster] += 1;
-        });
+                return { key: dominant, label: clusterLabels[dominant] };
+            }
 
-        let dominant = "backend";
-        let max = 0;
+            function deriveNextStep(targetRole, experienceLevel, dominantClusterKey) {
+                if (targetRole === "Software Architect") return "Architecture-focused assessment path";
+                if (targetRole === "Technical Lead") return "Leadership and architecture track";
+                if (targetRole === "Consultant") return "Consulting and systems diagnosis track";
+                if (experienceLevel === "10+ years" || experienceLevel === "6-9 years") return "Senior-level technical assessment";
+                if (dominantClusterKey === "architecture") return "Architecture-oriented screening";
+                return "Core technical assessment";
+            }
 
-        Object.keys(counters).forEach(key => {
-          if (counters[key] > max) {
-            max = counters[key];
-            dominant = key;
-          }
-        });
+            function getQueryContext() {
+                const params = new URLSearchParams(window.location.search);
+                return {
+                    src: params.get("src") || "",
+                    entry: params.get("entry") || "",
+                    campaign: params.get("campaign") || ""
+                };
+            }
 
-        return {
-          key: dominant,
-          label: clusterLabels[dominant]
-        };
-      }
+            function buildPayload(data) {
+                return {
+                    schemaVersion: CANDIDATE_CONFIG.SCHEMA_VERSION,
+                    profileType: "candidate",
+                    sourcePage: CANDIDATE_CONFIG.SOURCE_PAGE,
+                    pageVersion: CANDIDATE_CONFIG.PAGE_VERSION,
+                    submissionId: crypto.randomUUID(),
+                    submittedAt: new Date().toISOString(),
+                    channel: "candidate-intake",
 
-      function deriveNextStep(targetRole, experienceLevel, dominantClusterKey) {
-        if (targetRole === "Software Architect") return "Architecture-focused assessment path";
-        if (targetRole === "Technical Lead") return "Leadership and architecture track";
-        if (targetRole === "Consultant") return "Consulting and systems diagnosis track";
-        if (experienceLevel === "10+ years" || experienceLevel === "6-9 years") return "Senior-level technical assessment";
-        if (dominantClusterKey === "architecture") return "Architecture-oriented screening";
-        return "Core technical assessment";
-      }
+                    candidate: {
+                        fullName: data.fullName,
+                        email: data.email,
+                        phone: data.phone || "",
+                        location: data.location || "",
+                        linkedinUrl: data.linkedin || "",
+                        githubUrl: data.github || ""
+                    },
 
-      document.getElementById("candidateForm").addEventListener("submit", function (e) {
-        e.preventDefault();
+                    intake: {
+                        targetRole: data.targetRole,
+                        experienceLevel: data.experienceLevel,
+                        availability: data.availability,
+                        workMode: data.workMode,
+                        summary: data.candidateStory || "",
+                        motivation: ""
+                    },
 
-        const selected = document.querySelectorAll(".skill-toggle:checked");
-        if (!selected.length) {
-          alert("Please select at least one skill.");
-          return;
-        }
+                    skills: data.skills,
+                    turnstileToken: turnstileToken,
+                    meta: {
+                        source: "landing-candidate",
+                        queryContext: getQueryContext(),
+                        userAgent: navigator.userAgent
+                    }
+                };
+            }
 
-        const fullName = document.getElementById("fullName").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const location = document.getElementById("location").value.trim();
-        const targetRole = document.getElementById("targetRole").value;
-        const experienceLevel = document.getElementById("experienceLevel").value;
-        const availability = document.getElementById("availability").value;
-        const workMode = document.getElementById("workMode").value;
-        const candidateStory = document.getElementById("candidateStory").value.trim();
+            function sendPayload(payload, apiUrl, timeoutMs = 15000) {
+                if (!apiUrl) return Promise.reject(new Error("API URL is not configured."));
 
-        if (!fullName) return alert("Please enter your full name.");
-        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert("Please enter a valid email.");
-        if (!location) return alert("Please enter your location.");
-        if (!targetRole) return alert("Please select your target role.");
-        if (!experienceLevel) return alert("Please select your experience level.");
-        if (!availability) return alert("Please select your availability.");
-        if (!workMode) return alert("Please select your preferred work mode.");
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-        const skills = Array.from(selected).map((checkbox, index) => {
-          const skill = checkbox.value;
-          const levelSelect = document.querySelector('.skill-level[data-skill="' + CSS.escape(skill) + '"]');
-          const yearsInput = document.querySelector('.skill-years[data-skill="' + CSS.escape(skill) + '"]');
+                return fetch(apiUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                    signal: controller.signal
+                })
+                    .then(async res => {
+                        clearTimeout(timeoutId);
+                        const data = await res.json().catch(() => null);
 
-          return {
-            name: skill,
-            cluster: checkbox.dataset.cluster,
-            level: levelSelect ? levelSelect.value : "Intermediate",
-            years: yearsInput && yearsInput.value ? Number(yearsInput.value) : null,
-            isPrimary: index === 0
-          };
-        });
+                        if (!res.ok) {
+                            const message =
+                                data?.error ||
+                                data?.message ||
+                                (Array.isArray(data?.codes) && data.codes.length
+                                    ? "Turnstile failed: " + data.codes.join(", ")
+                                    : "HTTP " + res.status);
+                            throw new Error(message);
+                        }
 
-        const dominant = computeDominantCluster(skills);
-        const nextStep = deriveNextStep(targetRole, experienceLevel, dominant.key);
+                        if (!data || data.ok !== true) {
+                            throw new Error("Submission not accepted.");
+                        }
 
-        const summary = `${fullName} is targeting ${targetRole} with ${experienceLevel} of experience, prefers ${workMode.toLowerCase()} work, and is available ${availability.toLowerCase()}.`;
+                        return data;
+                    })
+                    .catch(err => {
+                        clearTimeout(timeoutId);
+                        if (err.name === "AbortError") throw new Error("Request timed out.");
+                        throw err;
+                    });
+            }
 
-        document.getElementById("candidateSummary").textContent =
-          candidateStory
-            ? summary + " Profile summary captured and ready for the next routing step."
-            : summary + " A fuller profile summary would make next-step routing even stronger.";
+            function setStatus(kind, text, nextStep) {
+                const pill = document.getElementById("statusPill");
+                const statusText = document.getElementById("statusText");
 
-        document.getElementById("resultRole").textContent = targetRole;
-        document.getElementById("resultCluster").textContent = dominant.label;
-        document.getElementById("resultNext").textContent = nextStep;
-        document.getElementById("statusPill").textContent = "Profile ready";
-        document.getElementById("statusText").textContent =
-          "The worker can later use this profile to decide assessment routing and stronger matching logic.";
-        document.getElementById("candidateResult").classList.add("show");
+                pill.textContent = kind;
+                statusText.textContent = text;
+                statusText.classList.remove("error");
 
-        window.scrollTo({
-          top: document.getElementById("candidateResult").offsetTop - 110,
-          behavior: "smooth"
-        });
+                if (kind === "Sent") {
+                    pill.style.background = "rgba(159,243,200,.65)";
+                    pill.style.color = "#083020";
+                } else if (kind === "Error") {
+                    pill.style.background = "rgba(255,144,144,.70)";
+                    pill.style.color = "#3f0909";
+                    statusText.classList.add("error");
+                } else {
+                    pill.style.background = "rgba(255,255,255,.18)";
+                    pill.style.color = "#082031";
+                }
 
-        // Future backend hook:
-        // const payload = { ... };
-        // fetch("/api/candidate-intake", { method: "POST", ... })
-        //   .then(...)
-        //   .then(data => redirect to assessment based on worker response)
-      });
-    })();
+                if (nextStep) document.getElementById("resultNext").textContent = nextStep;
+            }
+
+            document.getElementById("candidateForm").addEventListener("submit", function (e) {
+                e.preventDefault();
+                if (hasSubmitted) return;
+
+                const selected = document.querySelectorAll(".skill-toggle:checked");
+                if (!selected.length) return alert("Please select at least one skill.");
+
+                const fullName = document.getElementById("fullName").value.trim();
+                const email = document.getElementById("email").value.trim();
+                const phone = document.getElementById("phone").value.trim();
+                const location = document.getElementById("location").value.trim();
+                const targetRole = document.getElementById("targetRole").value;
+                const experienceLevel = document.getElementById("experienceLevel").value;
+                const availability = document.getElementById("availability").value;
+                const workMode = document.getElementById("workMode").value;
+                const linkedin = document.getElementById("linkedin").value.trim();
+                const github = document.getElementById("github").value.trim();
+                const candidateStory = document.getElementById("candidateStory").value.trim();
+
+                if (!fullName) return alert("Please enter your full name.");
+                if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert("Please enter a valid email.");
+                if (!location) return alert("Please enter your location.");
+                if (!targetRole) return alert("Please select your target role.");
+                if (!experienceLevel) return alert("Please select your experience level.");
+                if (!availability) return alert("Please select your availability.");
+                if (!workMode) return alert("Please select your preferred work mode.");
+
+                const skills = Array.from(selected).map((checkbox, index) => {
+                    const skill = checkbox.value;
+                    const levelSelect = document.querySelector('.skill-level[data-skill="' + CSS.escape(skill) + '"]');
+                    const yearsInput = document.querySelector('.skill-years[data-skill="' + CSS.escape(skill) + '"]');
+
+                    return {
+                        name: skill,
+                        cluster: checkbox.dataset.cluster,
+                        level: levelSelect ? levelSelect.value : "Intermediate",
+                        years: yearsInput && yearsInput.value ? Number(yearsInput.value) : null,
+                        isPrimary: index === 0
+                    };
+                });
+
+                const dominant = computeDominantCluster(skills);
+                const nextStep = deriveNextStep(targetRole, experienceLevel, dominant.key);
+
+                const summary = `${fullName} is targeting ${targetRole} with ${experienceLevel} of experience, prefers ${workMode.toLowerCase()} work, and is available ${availability.toLowerCase()}.`;
+                document.getElementById("candidateSummary").textContent =
+                    candidateStory
+                        ? summary + " Profile summary captured and ready for the next routing step."
+                        : summary + " A fuller profile summary would make next-step routing even stronger.";
+
+                document.getElementById("resultRole").textContent = targetRole;
+                document.getElementById("resultCluster").textContent = dominant.label;
+                document.getElementById("resultNext").textContent = nextStep;
+                document.getElementById("candidateResult").classList.add("show");
+
+                if (!turnstileToken) {
+                    const err = document.getElementById("turnstileError");
+                    if (err) {
+                        err.style.display = "block";
+                        err.textContent = "Please complete the security verification.";
+                    }
+                    setStatus("Error", "Security verification required.", nextStep);
+                    return;
+                }
+
+                const payload = buildPayload({
+                    fullName, email, phone, location, linkedin, github,
+                    targetRole, experienceLevel, availability, workMode,
+                    candidateStory, skills
+                });
+
+                setStatus("Sending", "Sending profile securely...", nextStep);
+                const submitButton = document.getElementById("submitButton");
+                submitButton.disabled = true;
+
+                sendPayload(payload, CANDIDATE_CONFIG.API_URL, CANDIDATE_CONFIG.REQUEST_TIMEOUT_MS)
+                    .then((data) => {
+                        hasSubmitted = true;
+                        setStatus("Sent", "Profile sent successfully. We will review and follow up.", nextStep);
+                        submitButton.disabled = true;
+                        submitButton.textContent = "Profile Sent";
+                        resetTurnstileWidget();
+
+                        // Optional future redirect:
+                        // if (data.assessmentTrackId) {
+                        //   window.location.href = `/assessment.html?track=${encodeURIComponent(data.assessmentTrackId)}`;
+                        // }
+                    })
+                    .catch((err) => {
+                        const msg = err.message || "Unable to send profile.";
+                        setStatus("Error", msg, "Please try again");
+                        submitButton.disabled = false;
+
+                        if (/turnstile|security|token/i.test(msg)) {
+                            const el = document.getElementById("turnstileError");
+                            if (el) {
+                                el.style.display = "block";
+                                el.textContent = "Security verification failed. Please retry.";
+                            }
+                            resetTurnstileWidget();
+                        }
+                    });
+
+                window.scrollTo({
+                    top: document.getElementById("candidateResult").offsetTop - 110,
+                    behavior: "smooth"
+                });
+            });
+        })();
     </script>
+
 </body>
 </html>
